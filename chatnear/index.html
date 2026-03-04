@@ -1,8 +1,9 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>ChatNear</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -44,10 +45,72 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 @keyframes meshFloat3{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
 
 #app{position:relative;z-index:1;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
-.screen{display:none;flex-direction:column;flex:1;padding:0 20px 90px}.screen.active{display:flex}
+.screen{display:none;flex-direction:column;flex:1;padding:0 20px 110px}.screen.active{display:flex}
+
+
+/* ── INTRO SPLASH ── */
+#s-intro{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 32px;transition:opacity .6s ease,transform .6s ease}
+#s-intro.hide{opacity:0;transform:scale(1.04);pointer-events:none}
+.intro-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.iparticle{position:absolute;border-radius:50%;animation:iFloat linear infinite}
+@keyframes iFloat{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:.6}100%{transform:translateY(-100px) scale(1);opacity:0}}
+.intro-logo-wrap{position:relative;margin-bottom:32px}
+.intro-logo{width:100px;height:100px;border-radius:32px;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;font-size:2.8rem;box-shadow:0 0 80px rgba(124,58,237,.5),0 0 160px rgba(236,72,153,.2);animation:introPulse 2s ease-in-out infinite;position:relative;z-index:1}
+@keyframes introPulse{0%,100%{box-shadow:0 0 60px rgba(124,58,237,.4),0 0 120px rgba(236,72,153,.15)}50%{box-shadow:0 0 100px rgba(124,58,237,.7),0 0 200px rgba(236,72,153,.3)}}
+.intro-logo-ring{position:absolute;inset:-12px;border-radius:44px;border:2px solid rgba(124,58,237,.3);animation:introRing 3s ease-in-out infinite}
+.intro-logo-ring2{position:absolute;inset:-24px;border-radius:56px;border:1px solid rgba(124,58,237,.15);animation:introRing 3s ease-in-out infinite .5s}
+@keyframes introRing{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.05);opacity:1}}
+.intro-brand{font-family:'Outfit',sans-serif;font-size:3rem;font-weight:900;letter-spacing:-.06em;margin-bottom:8px;background:linear-gradient(135deg,#fff 0%,#a855f7 50%,#ec4899 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:fadeUp .8s ease .3s both}
+.intro-tagline{font-size:.95rem;color:rgba(148,163,184,.7);font-weight:400;letter-spacing:.02em;animation:fadeUp .8s ease .5s both;margin-bottom:48px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.intro-btn{width:100%;max-width:300px;font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;padding:17px 24px;border-radius:18px;border:none;cursor:pointer;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;letter-spacing:.01em;position:relative;overflow:hidden;transition:all .25s;animation:fadeUp .8s ease .7s both;box-shadow:0 8px 40px rgba(124,58,237,.45)}
+.intro-btn:hover{transform:translateY(-3px);box-shadow:0 16px 50px rgba(124,58,237,.55)}
+.intro-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent)}
+.intro-ghost-btn{width:100%;max-width:300px;font-family:'Outfit',sans-serif;font-size:.92rem;font-weight:600;padding:14px 24px;border-radius:18px;border:1px solid rgba(255,255,255,.12);cursor:pointer;background:rgba(255,255,255,.04);color:rgba(255,255,255,.7);letter-spacing:.01em;transition:all .25s;animation:fadeUp .8s ease .85s both;margin-top:10px}
+.intro-ghost-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#fff}
+.intro-features{display:flex;gap:20px;margin-bottom:44px;animation:fadeUp .8s ease .6s both}
+.if{display:flex;flex-direction:column;align-items:center;gap:6px}
+.if-icon{width:44px;height:44px;border-radius:14px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.if-label{font-size:.65rem;font-weight:600;color:rgba(148,163,184,.6);text-transform:uppercase;letter-spacing:.08em}
+.intro-dots{display:flex;gap:6px;margin-top:28px;animation:fadeUp .8s ease 1s both}
+.idot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s}
+.idot.active{width:20px;background:linear-gradient(90deg,#7c3aed,#ec4899)}
+
+/* ── HOME (ONBOARDING REDESIGN) ── */
+#s-onboard{align-items:stretch;justify-content:flex-start;text-align:left;padding:0 0 160px;overflow-y:auto;gap:0}
+.home-hero{background:linear-gradient(160deg,rgba(124,58,237,.2) 0%,rgba(236,72,153,.1) 50%,transparent 100%);padding:48px 24px 32px;text-align:center;position:relative;overflow:hidden;flex-shrink:0}
+.home-hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.2),transparent 70%);pointer-events:none}
+.home-hero-logo{width:72px;height:72px;border-radius:22px;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 16px;box-shadow:0 0 40px rgba(124,58,237,.4)}
+.home-hero-title{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-.04em;line-height:1.1;margin-bottom:8px}
+.home-hero-title .g{background:linear-gradient(135deg,#fff,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.home-hero-sub{font-size:.88rem;color:rgba(148,163,184,.7);line-height:1.6;max-width:280px;margin:0 auto}
+.home-form{padding:20px 20px 0}
+.hf-section{margin-bottom:16px}
+.hf-label{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(71,85,105,.9);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.hf-label span{color:rgba(148,163,184,.4);font-weight:400;text-transform:none;letter-spacing:0}
+.hf-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:13px 16px;font-family:'Outfit',sans-serif;font-size:.95rem;color:#f1f5f9;outline:none;transition:all .2s}
+.hf-input:focus{border-color:rgba(124,58,237,.5);background:rgba(124,58,237,.06);box-shadow:0 0 0 4px rgba(124,58,237,.08)}
+.hf-input::placeholder{color:rgba(71,85,105,.8)}
+.hf-photo-row{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.hf-photo-circle{width:62px;height:62px;border-radius:20px;background:rgba(255,255,255,.05);border:2px dashed rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:1.8rem;cursor:pointer;overflow:hidden;flex-shrink:0;transition:all .2s}
+.hf-photo-circle:hover{border-color:rgba(124,58,237,.5);background:rgba(124,58,237,.06)}
+.hf-photo-circle img{width:100%;height:100%;object-fit:cover}
+.hf-photo-info .upload-link{font-size:.8rem;font-weight:600;color:#a855f7;cursor:pointer;display:block;margin-bottom:3px}
+.hf-photo-info .upload-sub{font-size:.7rem;color:rgba(71,85,105,.8)}
+.hf-av-grid{display:flex;gap:8px;flex-wrap:wrap}
+.hf-av{width:44px;height:44px;border-radius:13px;border:2px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);font-size:1.4rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.hf-av:hover,.hf-av.sel{border-color:#7c3aed;background:rgba(124,58,237,.14);transform:scale(1.08)}
+.hf-mood-grid{display:flex;gap:7px;flex-wrap:wrap}
+.hf-mood{font-size:.76rem;font-weight:500;padding:7px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:rgba(148,163,184,.8);cursor:pointer;transition:all .2s}
+.hf-mood:hover,.hf-mood.sel{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:#f59e0b}
+.home-cta{padding:0 20px;margin-top:8px}
+.hf-btn{width:100%;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:800;padding:16px;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;letter-spacing:.01em;transition:all .25s;box-shadow:0 8px 32px rgba(124,58,237,.35);position:relative;overflow:hidden}
+.hf-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent)}
+.hf-btn:hover{transform:translateY(-2px);box-shadow:0 14px 44px rgba(124,58,237,.5)}
+.hf-btn:active{transform:translateY(0)}
 
 /* ── ONBOARDING ── */
-#s-onboard{align-items:center;justify-content:flex-start;text-align:center;padding:48px 20px 100px;overflow-y:auto;gap:0}
+#s-onboard{align-items:center;justify-content:flex-start;text-align:center;padding:48px 20px 160px;overflow-y:auto;gap:0}
 .ob-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:999px;padding:5px 14px;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--neon2);margin-bottom:20px}
 .ob-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--neon2);box-shadow:0 0 8px var(--neon2);animation:blink 2s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
@@ -80,7 +143,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 .mood-chip{font-size:.74rem;font-weight:500;padding:6px 12px;border-radius:999px;border:1px solid var(--border);background:var(--glass);color:var(--text2);cursor:pointer;transition:all .2s}
 .mood-chip:hover,.mood-chip.sel{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:var(--amber)}
 
-.join-btn{width:100%;font-family:var(--ff);font-size:1rem;font-weight:700;padding:15px 20px;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--neon),var(--pink));color:#fff;letter-spacing:.02em;position:relative;overflow:hidden;transition:all .25s;margin-top:6px}
+.join-btn{width:100%;font-family:var(--ff);font-size:1rem;font-weight:700;padding:16px 20px;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--neon),var(--pink));color:#fff;letter-spacing:.02em;position:relative;overflow:hidden;transition:all .25s;margin-top:6px;box-shadow:0 8px 32px rgba(124,58,237,.4)}
 .join-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);opacity:0;transition:opacity .2s}
 .join-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(124,58,237,.4)}
 .join-btn:hover::before{opacity:1}
@@ -168,11 +231,11 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 .empty-state .icon{font-size:2.2rem;margin-bottom:10px;opacity:.3;display:block}
 
 /* ── BOTTOM NAV ── */
-.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(5,5,8,.85);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:none;padding:10px 0 max(10px,env(safe-area-inset-bottom));z-index:50}
-.bnav-inner{display:flex}
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:3px 0;transition:all .2s;position:relative}
-.bnav-icon{font-size:1.15rem;line-height:1;transition:transform .2s}
-.bnav-label{font-size:.55rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);transition:color .2s}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(5,5,8,.97);backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,.12);display:none;flex-direction:row;z-index:50;padding:10px 0 40px}
+.bnav-inner{display:flex;flex-direction:row;width:100%;align-items:center}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;padding:2px 0;transition:all .2s;position:relative;min-height:48px}
+.bnav-icon{font-size:1.4rem;line-height:1;transition:transform .2s;display:block}
+.bnav-label{font-size:.62rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--text3);transition:color .2s;display:block;white-space:nowrap;line-height:1}
 .bnav-item.active .bnav-label{color:var(--neon2)}
 .bnav-item.active .bnav-icon{filter:drop-shadow(0 0 6px rgba(168,85,247,.7));transform:scale(1.1)}
 .bnav-badge{position:absolute;top:0;right:calc(50% - 18px);width:7px;height:7px;border-radius:50%;background:var(--red);border:2px solid var(--bg);display:none}
@@ -192,7 +255,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 .hdr-btn{width:34px;height:34px;border-radius:10px;background:var(--glass2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;transition:all .2s}
 .hdr-btn:hover{border-color:var(--border2);background:var(--glass3)}
 
-.messages{flex:1;overflow-y:auto;padding:16px 18px 130px;display:flex;flex-direction:column;gap:10px}
+.messages{flex:1;overflow-y:auto;padding:16px 18px 180px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:78%;position:relative;animation:msgIn .22s cubic-bezier(.34,1.56,.64,1)}
 @keyframes msgIn{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 .msg.me{align-self:flex-end}.msg.them{align-self:flex-start}
@@ -202,8 +265,9 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 .msg-meta{font-size:.56rem;color:var(--text3);margin-top:4px;padding:0 3px;display:flex;align-items:center;gap:4px}
 .msg.me .msg-meta{justify-content:flex-end}
 .msg-from{font-weight:600;color:var(--text2)}
-.receipt{font-size:.62rem}
-.receipt.sent{color:var(--text3)}.receipt.read{color:var(--cyan)}
+.receipt{font-size:.7rem;font-weight:600;letter-spacing:-.05em;line-height:1}
+.receipt.sent{color:rgba(148,163,184,.5)}
+.receipt.read{color:var(--cyan);text-shadow:0 0 6px rgba(6,182,212,.4)}
 .chat-photo{max-width:200px;border-radius:12px;cursor:pointer;display:block;margin:2px 0}
 .voice-row{display:flex;align-items:center;gap:8px;min-width:140px}
 .v-play{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2);border:none;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
@@ -227,7 +291,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 @keyframes tDot{0%,80%,100%{transform:scale(1);opacity:.4}40%{transform:scale(1.25);opacity:1}}
 
 /* Input */
-.input-zone{position:fixed;bottom:52px;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:10px 14px 12px;background:rgba(5,5,8,.9);backdrop-filter:blur(24px);border-top:1px solid var(--border);z-index:60}
+.input-zone{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:10px 14px 12px;background:rgba(5,5,8,.9);backdrop-filter:blur(24px);border-top:1px solid var(--border);z-index:60}
 .input-extras{display:flex;gap:6px;margin-bottom:8px}
 .xtra-btn{width:32px;height:32px;border-radius:10px;background:var(--glass2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.88rem;transition:all .2s;color:var(--text2);flex-shrink:0}
 .xtra-btn:hover{border-color:var(--border2);color:var(--text);background:var(--glass3)}
@@ -288,7 +352,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 .tog input:checked~.tog-thumb{transform:translateX(18px)}
 
 /* ── WAVE POPUP ── */
-.wave-popup{position:fixed;bottom:130px;left:50%;transform:translateX(-50%) translateY(200px);width:calc(100% - 32px);max-width:390px;background:var(--glass2);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:16px;box-shadow:0 16px 60px rgba(0,0,0,.5);z-index:200;transition:transform .45s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:12px;backdrop-filter:blur(16px)}
+.wave-popup{position:fixed;bottom:105px;left:50%;transform:translateX(-50%) translateY(200px);width:calc(100% - 32px);max-width:390px;background:var(--glass2);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:16px;box-shadow:0 16px 60px rgba(0,0,0,.5);z-index:200;transition:transform .45s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:12px;backdrop-filter:blur(16px)}
 .wave-popup.show{transform:translateX(-50%) translateY(0)}
 .wp-av{width:46px;height:46px;border-radius:14px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;overflow:hidden}
 .wp-av img{width:100%;height:100%;object-fit:cover}
@@ -355,51 +419,76 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 <div id="mesh"><div class="mesh-orb mesh-orb1"></div></div>
 <div id="app">
 
-  <!-- ONBOARDING -->
-  <div class="screen active" id="s-onboard">
-    <div class="ob-badge">✦ New in your area</div>
-    <div class="ob-logo">👋</div>
-    <h1 class="ob-title">Meet people<br><span class="grad">around you</span></h1>
-    <p class="ob-sub">ChatNear finds real people nearby and lets you message them instantly — like AirDrop, but for friendships.</p>
-
-    <div class="card">
-      <span class="card-label">Your Name</span>
-      <input class="inp" id="inp-name" placeholder="What do people call you?" maxlength="24">
+  <!-- INTRO SPLASH -->
+  <div id="s-intro">
+    <div class="intro-particles" id="intro-particles"></div>
+    <div class="intro-logo-wrap">
+      <div class="intro-logo-ring2"></div>
+      <div class="intro-logo-ring"></div>
+      <div class="intro-logo">👋</div>
     </div>
+    <div class="intro-brand">ChatNear</div>
+    <div class="intro-tagline">Meet people around you, instantly</div>
+    <div class="intro-features">
+      <div class="if"><div class="if-icon">📡</div><div class="if-label">Radar</div></div>
+      <div class="if"><div class="if-icon">💬</div><div class="if-label">Chat</div></div>
+      <div class="if"><div class="if-icon">📍</div><div class="if-label">Nearby</div></div>
+      <div class="if"><div class="if-icon">👥</div><div class="if-label">Friends</div></div>
+    </div>
+    <button class="intro-btn" onclick="goToHome()">Get Started →</button>
+    <button class="intro-ghost-btn" onclick="goToHome()">I already have an account</button>
+    <div class="intro-dots">
+      <div class="idot active"></div>
+      <div class="idot"></div>
+      <div class="idot"></div>
+    </div>
+  </div>
 
-    <div class="card">
-      <span class="card-label">Profile Photo</span>
-      <div class="photo-upload-area">
-        <div class="photo-circle" id="photo-preview" onclick="document.getElementById('photo-input').click()">😎</div>
-        <div class="photo-upload-txt">
-          <span class="u-btn" onclick="document.getElementById('photo-input').click()">Upload a photo</span>
-          <span class="u-sub">Or pick an emoji avatar below</span>
+  <!-- HOME / ONBOARDING -->
+  <div class="screen" id="s-onboard">
+    <div class="home-hero">
+      <div class="home-hero-logo">👋</div>
+      <h1 class="home-hero-title">Create your<br><span class="g">profile</span></h1>
+      <p class="home-hero-sub">Set up your profile to start meeting people nearby</p>
+    </div>
+    <div class="home-form">
+      <div class="hf-section">
+        <div class="hf-label">Your Name</div>
+        <input class="hf-input" id="inp-name" placeholder="What do people call you?" maxlength="24">
+      </div>
+      <div class="hf-section">
+        <div class="hf-label">Profile Photo</div>
+        <div class="hf-photo-row">
+          <div class="hf-photo-circle" id="photo-preview" onclick="document.getElementById('photo-input').click()">😎</div>
+          <div class="hf-photo-info">
+            <span class="upload-link" onclick="document.getElementById('photo-input').click()">Upload a photo</span>
+            <span class="upload-sub">Or pick an emoji below</span>
+          </div>
+        </div>
+        <input type="file" id="photo-input" accept="image/*" onchange="handlePhotoUpload(this)">
+        <div class="hf-av-grid" id="av-row">
+          <div class="hf-av sel" data-av="😎">😎</div><div class="hf-av" data-av="🦊">🦊</div><div class="hf-av" data-av="🐻">🐻</div><div class="hf-av" data-av="🐸">🐸</div><div class="hf-av" data-av="🦁">🦁</div><div class="hf-av" data-av="🐯">🐯</div><div class="hf-av" data-av="🐼">🐼</div><div class="hf-av" data-av="🤖">🤖</div><div class="hf-av" data-av="👽">👽</div><div class="hf-av" data-av="🧙">🧙</div>
         </div>
       </div>
-      <input type="file" id="photo-input" accept="image/*" onchange="handlePhotoUpload(this)">
-      <div class="av-grid" id="av-row">
-        <div class="av-opt sel" data-av="😎">😎</div><div class="av-opt" data-av="🦊">🦊</div><div class="av-opt" data-av="🐻">🐻</div><div class="av-opt" data-av="🐸">🐸</div><div class="av-opt" data-av="🦁">🦁</div><div class="av-opt" data-av="🐯">🐯</div><div class="av-opt" data-av="🐼">🐼</div><div class="av-opt" data-av="🤖">🤖</div><div class="av-opt" data-av="👽">👽</div><div class="av-opt" data-av="🧙">🧙</div>
+      <div class="hf-section">
+        <div class="hf-label">Bio <span>(optional)</span></div>
+        <input class="hf-input" id="inp-bio" placeholder="Something about you…" maxlength="60">
+      </div>
+      <div class="hf-section">
+        <div class="hf-label">Current Vibe</div>
+        <div class="hf-mood-grid" id="mood-row">
+          <div class="hf-mood sel" data-mood="Just chilling 🌊">Just chilling 🌊</div>
+          <div class="hf-mood" data-mood="Looking to chat 💬">Looking to chat 💬</div>
+          <div class="hf-mood" data-mood="Up for anything 🎲">Up for anything 🎲</div>
+          <div class="hf-mood" data-mood="Exploring 🗺️">Exploring 🗺️</div>
+          <div class="hf-mood" data-mood="Need food recs 🍕">Need food recs 🍕</div>
+          <div class="hf-mood" data-mood="Gaming nearby? 🎮">Gaming nearby? 🎮</div>
+        </div>
       </div>
     </div>
-
-    <div class="card">
-      <span class="card-label">Bio <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">(optional)</span></span>
-      <input class="inp" id="inp-bio" placeholder="Something about you…" maxlength="60">
+    <div class="home-cta">
+      <button class="hf-btn" onclick="joinChatNear()">✦ Go Discoverable</button>
     </div>
-
-    <div class="card">
-      <span class="card-label">Current Vibe</span>
-      <div class="mood-grid" id="mood-row">
-        <div class="mood-chip sel" data-mood="Just chilling 🌊">Just chilling 🌊</div>
-        <div class="mood-chip" data-mood="Looking to chat 💬">Looking to chat 💬</div>
-        <div class="mood-chip" data-mood="Up for anything 🎲">Up for anything 🎲</div>
-        <div class="mood-chip" data-mood="Exploring 🗺️">Exploring 🗺️</div>
-        <div class="mood-chip" data-mood="Need food recs 🍕">Need food recs 🍕</div>
-        <div class="mood-chip" data-mood="Gaming nearby? 🎮">Gaming nearby? 🎮</div>
-      </div>
-    </div>
-
-    <button class="join-btn" onclick="joinChatNear()">✦ Go Discoverable</button>
   </div>
 
   <!-- RADAR -->
@@ -525,7 +614,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
     </div>
   </div>
 
-  <nav class="bnav" id="bottom-nav" style="display:none">
+  <nav class="bnav" id="bottom-nav">
     <div class="bnav-inner">
       <div class="bnav-item active" id="nav-radar" onclick="navTo('s-radar',this)"><div class="bnav-icon">📡</div><div class="bnav-label">Radar</div></div>
       <div class="bnav-item" id="nav-chat" onclick="navTo('s-chat',this)" style="display:none"><div class="bnav-icon">💬</div><div class="bnav-label">Chat</div><div class="bnav-badge" id="nav-unread"></div></div>
@@ -597,6 +686,46 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 
 <div class="toast" id="toast"></div>
 <script>
+
+// ── INTRO ──
+function goToHome(){
+  const intro=document.getElementById('s-intro');
+  intro.classList.add('hide');
+  setTimeout(()=>{intro.style.display='none';},700);
+  goScreen('s-onboard');
+}
+
+function spawnParticles(){
+  const container=document.getElementById('intro-particles');
+  if(!container)return;
+  const colors=['#7c3aed','#a855f7','#ec4899','#06b6d4','#10b981','#f59e0b'];
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');
+    p.className='iparticle';
+    const size=Math.random()*6+3;
+    p.style.cssText=`
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${4+Math.random()*6}s;
+      animation-delay:${Math.random()*4}s;
+      opacity:.6;
+      filter:blur(${Math.random()*2}px);
+      box-shadow:0 0 ${size*3}px currentColor;
+    `;
+    container.appendChild(p);
+  }
+}
+spawnParticles();
+
+// Animate intro dots
+let introDotIdx=0;
+setInterval(()=>{
+  const dots=document.querySelectorAll('.idot');
+  dots.forEach((d,i)=>d.classList.toggle('active',i===introDotIdx));
+  introDotIdx=(introDotIdx+1)%dots.length;
+},1800);
+
 // ── SUPABASE ──
 const SUPABASE_URL='https://phxydxghhtrpwibvuwxr.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBoeHlkeGdoaHRycHdpYnZ1d3hyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDczOTcsImV4cCI6MjA4ODE4MzM5N30.wzhcKSxDUMluvwZt-nTU-u6CyqXWQm-t-Dk3xj-_wLs';
@@ -622,13 +751,13 @@ function calcDist(la1,lo1,la2,lo2){const R=6371000,dL=(la2-la1)*Math.PI/180,dl=(
 
 // ── ONBOARDING ──
 document.getElementById('av-row').addEventListener('click',e=>{
-  const t=e.target.closest('.av-opt');if(!t)return;
-  document.querySelectorAll('.av-opt').forEach(x=>x.classList.remove('sel'));t.classList.add('sel');
+  const t=e.target.closest('.hf-av');if(!t)return;
+  document.querySelectorAll('.hf-av').forEach(x=>x.classList.remove('sel'));t.classList.add('sel');
   myPhotoDataUrl='';
   const prev=document.getElementById('photo-preview');
-  prev.innerHTML=t.dataset.av;prev.style.fontSize='1.7rem';
+  prev.innerHTML=t.dataset.av;prev.style.fontSize='1.8rem';
 });
-document.getElementById('mood-row').addEventListener('click',e=>{const t=e.target.closest('.mood-chip');if(!t)return;document.querySelectorAll('.mood-chip').forEach(x=>x.classList.remove('sel'));t.classList.add('sel')});
+document.getElementById('mood-row').addEventListener('click',e=>{const t=e.target.closest('.hf-mood');if(!t)return;document.querySelectorAll('.hf-mood').forEach(x=>x.classList.remove('sel'));t.classList.add('sel')});
 
 function handlePhotoUpload(input){
   const file=input.files[0];if(!file)return;
@@ -655,13 +784,13 @@ function handleProfPhotoUpload(input){
 async function joinChatNear(){
   const n=document.getElementById('inp-name').value.trim();
   if(!n){showToast('⚠️ Please enter your name!');return;}
-  const av=document.querySelector('.av-opt.sel')?.dataset?.av||'😎';
-  const mood=document.querySelector('.mood-chip.sel')?.dataset?.mood||'Just chilling 🌊';
+  const av=document.querySelector('.hf-av.sel')?.dataset?.av||'😎';
+  const mood=document.querySelector('.hf-mood.sel')?.dataset?.mood||'Just chilling 🌊';
   const bio=document.getElementById('inp-bio').value.trim();
   me={name:n,avatar:av,photoUrl:myPhotoDataUrl,bio,mood,id:'u'+ts()+Math.random().toString(36).slice(2,6),waves:0,msgs:0,lat:null,lng:null};
   syncProfileUI();
   goScreen('s-radar');
-  document.getElementById('bottom-nav').style.display='block';
+  document.getElementById('bottom-nav').style.display='flex';
   requestGPS();
   await broadcastPresence();
   await doScan();
@@ -889,7 +1018,7 @@ function subscribeRealtime(){
       if(msg.receiver_id!==me.id&&msg.chat_key!==ck)return;
       if(!msgCache[ck])msgCache[ck]=[];
       msgCache[ck].push({id:msg.id,senderId:msg.sender_id,senderName:msg.sender_name,text:msg.text,ts:new Date(msg.created_at).getTime(),type:msg.type||'msg',photoUrl:msg.photo_url||'',audioUrl:msg.audio_url||'',reactions:{},disappearing:msg.disappearing||false,readBy:[]});
-      if(activePerson&&chatKey(me.id,activePerson.id)===ck){renderMessages(ck);}
+      if(activePerson&&chatKey(me.id,activePerson.id)===ck){renderMessages(ck);markRead(ck,msg.sender_id);}
       else{sendPushNotif('💬 '+msg.sender_name,msg.text.slice(0,60));showToast('💬 '+msg.sender_name+': '+msg.text.slice(0,35));document.getElementById('notif-dot').style.display='block';document.getElementById('nav-unread').style.display='block';}
     }).subscribe();
 }
@@ -923,6 +1052,21 @@ async function addReaction(ck,msgId,emoji){
 }
 
 // ── CHAT UI ──
+
+async function markRead(ck, senderId){
+  // Mark all messages from senderId in this chat as read by me
+  try{
+    const msgs = msgCache[ck]||[];
+    const unread = msgs.filter(m=>m.senderId===senderId&&!(m.readBy||[]).includes(me.id));
+    for(const m of unread){
+      if(!m.id)continue;
+      m.readBy = [...(m.readBy||[]), me.id];
+      await sb.from('messages').update({read_by: m.readBy}).eq('id', m.id);
+    }
+    if(unread.length>0) renderMessages(ck);
+  }catch(e){}
+}
+
 async function openChat(p){
   activePerson=p;activeGroup=null;
   updateAv(document.getElementById('chat-av'),{...p,photo_url:p.photo_url||''});
@@ -934,6 +1078,7 @@ async function openChat(p){
   goScreen('s-chat');
   const ck=chatKey(me.id,p.id);lastSeenTs[ck]=ts();
   await loadMessages(ck);renderMessages(ck);
+  if(p&&!p.demo)markRead(ck, p.id);
   if((msgCache[ck]||[]).length===0){
     await pushMessage(ck,{type:'notice',senderId:'system',senderName:'',text:'You and '+p.name+' are now connected 👋',ts:ts(),demo:p.demo});
     if(p.demo)setTimeout(()=>demoReply(p,'',true),1000+Math.random()*800);
@@ -955,7 +1100,16 @@ function renderMessages(ck){
     else if(m.type==='voice'&&m.audioUrl)content=`<div class="voice-row"><button class="v-play" onclick="playVoice('${m.audioUrl}',this)">▶</button><div class="v-bar"></div><span class="v-dur">Voice</span></div>`;
     else content=esc(m.text);
     const readBy=m.readBy||[];
-    const receipt=isMe?(readBy.length>0?'<span class="receipt read">✓✓</span>':'<span class="receipt sent">✓</span>'):'';
+    let receipt='';
+    if(isMe){
+      if(readBy.length>0){
+        // Blue double tick = SEEN
+        receipt='<span class="receipt read" title="Seen">✓✓</span>';
+      } else {
+        // Grey single tick = SENT
+        receipt='<span class="receipt sent" title="Sent">✓</span>';
+      }
+    }
     const rxEntries=Object.entries(m.reactions||{});
     const rxHtml=rxEntries.length?`<div class="rxn-bar">${rxEntries.map(([e,u])=>`<div class="rxn-pill${u.includes(me.id)?' mine':''}" onclick="addReaction('${ck}','${m.id}','${e}')">${e}<span class="rxn-count">${u.length}</span></div>`).join('')}</div>`:'';
     d.innerHTML=`
@@ -1121,7 +1275,7 @@ function syncProfileUI(){
   document.getElementById('s-friends-count').textContent=friends.length;
 }
 function toggleDisc(el){if(!el.checked){removePresence();showToast('👻 Invisible now');}else{broadcastPresence();showToast('📡 Discoverable again!');}}
-function editProfile(){document.getElementById('bottom-nav').style.display='none';goScreen('s-onboard');}
+function editProfile(){document.getElementById('bottom-nav').style.cssText='display:none';goScreen('s-onboard');}
 function logout(){removePresence();if(scannerID)clearInterval(scannerID);if(realtimeChannel)sb.removeChannel(realtimeChannel);nearby=[];activePerson=null;activeGroup=null;msgCache={};document.getElementById('bottom-nav').style.display='none';goScreen('s-onboard');}
 
 // ── MODAL ──
