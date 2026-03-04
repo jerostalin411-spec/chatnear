@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -47,6 +48,24 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 #app{position:relative;z-index:1;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
 .screen{display:none;flex-direction:column;flex:1;padding:0 20px 110px}.screen.active{display:flex}
 
+
+
+/* ── GOOGLE LOGIN ── */
+.google-btn{width:100%;max-width:300px;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:600;padding:14px 20px;border-radius:14px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .25s;margin-bottom:10px}
+.google-btn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);transform:translateY(-1px)}
+.google-btn img{width:20px;height:20px}
+.or-divider{display:flex;align-items:center;gap:10px;width:100%;max-width:300px;margin:4px 0 10px}
+.or-line{flex:1;height:1px;background:rgba(255,255,255,.1)}
+.or-text{font-size:.72rem;color:rgba(148,163,184,.5);font-weight:500;white-space:nowrap}
+.auth-loading{display:none;flex-direction:column;align-items:center;gap:12px;margin-top:16px}
+.auth-spinner{width:32px;height:32px;border-radius:50%;border:3px solid rgba(124,58,237,.2);border-top-color:#7c3aed;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.auth-loading-txt{font-size:.8rem;color:rgba(148,163,184,.6)}
+.user-logged-in{display:none;align-items:center;gap:8px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:8px 14px;margin-bottom:12px;width:100%;max-width:300px}
+.uli-av{width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.uli-av img{width:100%;height:100%;object-fit:cover}
+.uli-name{font-size:.8rem;font-weight:600;color:#10b981;flex:1}
+.uli-check{font-size:.9rem}
 
 /* ── INTRO SPLASH ── */
 #s-intro{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 32px;transition:opacity .6s ease,transform .6s ease}
@@ -435,8 +454,16 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
       <div class="if"><div class="if-icon">📍</div><div class="if-label">Nearby</div></div>
       <div class="if"><div class="if-icon">👥</div><div class="if-label">Friends</div></div>
     </div>
-    <button class="intro-btn" onclick="goToHome()">Get Started →</button>
-    <button class="intro-ghost-btn" onclick="goToHome()">I already have an account</button>
+    <button class="google-btn" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      Continue with Google
+    </button>
+    <div class="or-divider"><div class="or-line"></div><div class="or-text">or</div><div class="or-line"></div></div>
+    <button class="intro-btn" onclick="goToHome()">Continue as Guest →</button>
+    <div class="auth-loading" id="auth-loading">
+      <div class="auth-spinner"></div>
+      <div class="auth-loading-txt">Signing you in…</div>
+    </div>
     <div class="intro-dots">
       <div class="idot active"></div>
       <div class="idot"></div>
@@ -450,6 +477,11 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
       <div class="home-hero-logo">👋</div>
       <h1 class="home-hero-title">Create your<br><span class="g">profile</span></h1>
       <p class="home-hero-sub">Set up your profile to start meeting people nearby</p>
+      <div class="user-logged-in" id="user-logged-in" style="margin:12px auto 0">
+        <div class="uli-av"><img id="google-av" src="" alt=""></div>
+        <span class="uli-name" id="google-name">Signed in</span>
+        <span class="uli-check">✓</span>
+      </div>
     </div>
     <div class="home-form">
       <div class="hf-section">
@@ -686,6 +718,66 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 
 <div class="toast" id="toast"></div>
 <script>
+
+
+// ── GOOGLE AUTH ──
+async function signInWithGoogle(){
+  document.getElementById('auth-loading').style.display='flex';
+  try{
+    const {data,error}=await sb.auth.signInWithOAuth({
+      provider:'google',
+      options:{redirectTo:window.location.origin+window.location.pathname}
+    });
+    if(error)throw error;
+  }catch(e){
+    document.getElementById('auth-loading').style.display='none';
+    showToast('⚠️ Google sign in failed. Try again.');
+    console.error(e);
+  }
+}
+
+async function checkAuthSession(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){
+    const user=session.user;
+    const meta=user.user_metadata||{};
+    // Pre-fill name and photo from Google
+    const gName=meta.full_name||meta.name||'';
+    const gPhoto=meta.avatar_url||meta.picture||'';
+    const gEmail=user.email||'';
+    if(gName){
+      document.getElementById('inp-name').value=gName;
+    }
+    if(gPhoto){
+      myPhotoDataUrl=gPhoto;
+      const prev=document.getElementById('photo-preview');
+      prev.innerHTML=`<img src="${gPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:18px">`;
+      // Show logged in badge
+      const badge=document.getElementById('user-logged-in');
+      const avEl=document.getElementById('google-av');
+      const nameEl=document.getElementById('google-name');
+      if(badge){badge.style.display='flex';}
+      if(avEl){avEl.src=gPhoto;}
+      if(nameEl){nameEl.textContent=gName||gEmail;}
+    }
+    // Hide intro, go straight to home
+    const intro=document.getElementById('s-intro');
+    if(intro){intro.style.display='none';}
+    goScreen('s-onboard');
+    showToast('👋 Welcome back, '+( gName.split(' ')[0]||'there')+'!');
+  }
+}
+
+// Check session on load
+window.addEventListener('load', ()=>{
+  checkAuthSession();
+  // Listen for auth state changes
+  sb.auth.onAuthStateChange((event,session)=>{
+    if(event==='SIGNED_IN'&&session){
+      checkAuthSession();
+    }
+  });
+});
 
 // ── INTRO ──
 function goToHome(){
@@ -1287,3 +1379,4 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 </script>
 </body>
 </html>
+
