@@ -50,6 +50,64 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 
 
 
+
+/* ── CREDITS ── */
+.credits-bar{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(251,191,36,.06));border:1px solid rgba(245,158,11,.25);border-radius:16px;padding:12px 16px;margin:0 0 16px;cursor:pointer;transition:all .2s}
+.credits-bar:hover{background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(251,191,36,.1));border-color:rgba(245,158,11,.4)}
+.credits-left{display:flex;align-items:center;gap:10px}
+.credits-icon{font-size:1.4rem}
+.credits-info .credits-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,158,11,.7);margin-bottom:2px}
+.credits-info .credits-amount{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:900;color:#f59e0b;letter-spacing:-.03em;line-height:1}
+.credits-buy-btn{font-size:.75rem;font-weight:700;padding:7px 14px;border-radius:999px;background:linear-gradient(135deg,#f59e0b,#fbbf24);border:none;color:#000;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap}
+
+/* Credits modal */
+.credits-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:24px 24px 0 0;padding:24px;width:100%;max-width:430px;animation:slideUp .3s cubic-bezier(.34,1.56,.64,1)}
+.credits-modal-title{font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:-.03em;margin-bottom:4px}
+.credits-modal-sub{font-size:.8rem;color:var(--text2);margin-bottom:20px}
+.credits-packages{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.cpkg{background:var(--glass);border:2px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;transition:all .2s;text-align:center;position:relative;overflow:hidden}
+.cpkg:hover{border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.05);transform:translateY(-2px)}
+.cpkg.popular{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.06)}
+.cpkg-badge{position:absolute;top:8px;right:8px;font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:999px;background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#000;text-transform:uppercase;letter-spacing:.06em}
+.cpkg-emoji{font-size:1.8rem;margin-bottom:6px}
+.cpkg-credits{font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:900;color:#f59e0b;letter-spacing:-.03em;line-height:1;margin-bottom:2px}
+.cpkg-label{font-size:.65rem;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em}
+.cpkg-price{font-size:.95rem;font-weight:700;color:var(--text)}
+.cpkg-per{font-size:.62rem;color:var(--text3);margin-top:2px}
+
+/* What you can buy */
+.spend-title{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.spend-list{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
+.spend-item{display:flex;align-items:center;gap:10px;background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:10px 13px}
+.spend-ico{font-size:1.1rem;width:32px;text-align:center;flex-shrink:0}
+.spend-info{flex:1}
+.spend-name{font-size:.84rem;font-weight:600;margin-bottom:1px}
+.spend-desc{font-size:.68rem;color:var(--text3)}
+.spend-cost{font-size:.8rem;font-weight:700;color:#f59e0b;display:flex;align-items:center;gap:3px;flex-shrink:0}
+
+/* Feature locked overlay */
+.locked-overlay{position:absolute;inset:0;background:rgba(5,5,8,.7);border-radius:inherit;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px);cursor:pointer;z-index:5}
+.locked-badge{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#000;font-size:.7rem;font-weight:700;padding:5px 12px;border-radius:999px;display:flex;align-items:center;gap:5px}
+
+
+/* ── DELETE ACCOUNT ── */
+.danger-zone{background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.15);border-radius:14px;padding:14px 16px;margin-bottom:20px}
+.danger-zone-title{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(239,68,68,.6);margin-bottom:10px}
+.delete-btn{width:100%;font-family:'Outfit',sans-serif;font-size:.86rem;font-weight:600;padding:12px;border-radius:12px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.06);color:#ef4444;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.delete-btn:hover{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.5)}
+.delete-confirm-modal .modal{background:var(--bg2);border-radius:24px 24px 0 0;padding:24px}
+.delete-warning{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:16px;margin-bottom:18px;text-align:center}
+.delete-warning-icon{font-size:2.5rem;margin-bottom:8px}
+.delete-warning-title{font-size:1rem;font-weight:700;color:#ef4444;margin-bottom:6px}
+.delete-warning-desc{font-size:.8rem;color:var(--text2);line-height:1.6}
+.delete-items{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.delete-item{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--text2)}
+.delete-item::before{content:'✕';color:#ef4444;font-weight:700;font-size:.75rem;flex-shrink:0}
+.delete-confirm-btn{width:100%;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:700;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;cursor:pointer;margin-bottom:10px;transition:all .2s}
+.delete-confirm-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(239,68,68,.35)}
+.delete-cancel-btn{width:100%;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:600;padding:12px;border-radius:14px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .2s}
+.delete-cancel-btn:hover{background:var(--glass2)}
+
 /* ── GOOGLE LOGIN ── */
 .google-btn{width:100%;max-width:300px;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:600;padding:14px 20px;border-radius:14px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .25s;margin-bottom:10px}
 .google-btn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);transform:translateY(-1px)}
@@ -534,7 +592,9 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
         </div>
       </div>
       <div class="tb-actions">
+        <div class="pill-btn" onclick="boostVisibility()" title="Boost visibility">🚀</div>
         <div class="pill-btn" onclick="goScreen('s-friends')">👥</div>
+        <div class="pill-btn" onclick="showCreditsModal()" style="gap:4px"><span style="font-size:.75rem;font-weight:700;color:#f59e0b" id="credits-topbar">💎 0</span></div>
         <div class="pill-btn" id="notif-btn" onclick="showNotifs()">🔔<div class="notif-dot" id="notif-dot"></div></div>
       </div>
     </div>
@@ -636,6 +696,16 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
         <div class="stat"><div class="stat-n" id="s-friends-count">0</div><div class="stat-l">Friends</div></div>
       </div>
     </div>
+    <div class="credits-bar" onclick="showCreditsModal()">
+      <div class="credits-left">
+        <div class="credits-icon">💎</div>
+        <div class="credits-info">
+          <div class="credits-label">Your Credits</div>
+          <div class="credits-amount" id="credits-display">0</div>
+        </div>
+      </div>
+      <button class="credits-buy-btn">+ Buy Credits</button>
+    </div>
     <div class="sec-hdr"><span class="sec-title">Settings</span></div>
     <div class="sett-list">
       <div class="sett"><div class="sett-ico">📡</div><div class="sett-body"><div class="sett-name">Discoverable</div><div class="sett-desc">Let others see you on radar</div></div><label class="tog"><input type="checkbox" checked id="tog-disc" onchange="toggleDisc(this)"><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
@@ -643,6 +713,10 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
       <div class="sett"><div class="sett-ico">⏱</div><div class="sett-body"><div class="sett-name">Disappearing Messages</div><div class="sett-desc">Messages delete after 24 hours</div></div><label class="tog"><input type="checkbox" id="tog-disappear"><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
       <div class="sett" onclick="editProfile()"><div class="sett-ico">✏️</div><div class="sett-body"><div class="sett-name">Edit Profile</div><div class="sett-desc">Change name, photo, bio or vibe</div></div><div class="sett-arr">›</div></div>
       <div class="sett" onclick="logout()"><div class="sett-ico">👋</div><div class="sett-body"><div class="sett-name">Log Out</div><div class="sett-desc">Go invisible and leave</div></div><div class="sett-arr">›</div></div>
+    </div>
+    <div class="danger-zone">
+      <div class="danger-zone-title">⚠️ Danger Zone</div>
+      <button class="delete-btn" onclick="showDeleteConfirm()">🗑 Delete My Account</button>
     </div>
   </div>
 
@@ -686,6 +760,97 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
   </div>
 </div>
 
+
+
+<!-- DELETE ACCOUNT MODAL -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal">
+    <div class="delete-warning">
+      <div class="delete-warning-icon">⚠️</div>
+      <div class="delete-warning-title">Delete Your Account?</div>
+      <div class="delete-warning-desc">This is permanent and cannot be undone. Everything will be deleted.</div>
+    </div>
+    <div class="delete-items">
+      <div class="delete-item">Your profile and photo</div>
+      <div class="delete-item">All your chat messages</div>
+      <div class="delete-item">Your friends list</div>
+      <div class="delete-item">Your credits balance</div>
+      <div class="delete-item">Your Google sign in connection</div>
+    </div>
+    <button class="delete-confirm-btn" onclick="deleteAccount()">Yes, Delete Everything</button>
+    <button class="delete-cancel-btn" onclick="closeModal('delete-modal')">Cancel — Keep My Account</button>
+  </div>
+</div>
+
+<!-- CREDITS MODAL -->
+<div class="modal-overlay" id="credits-modal">
+  <div class="credits-modal">
+    <div class="credits-modal-title">💎 Buy Credits</div>
+    <div class="credits-modal-sub">Use credits to unlock premium features</div>
+    <div class="credits-packages">
+      <div class="cpkg" onclick="buyCredits(50,'$0.99')">
+        <div class="cpkg-emoji">⚡</div>
+        <div class="cpkg-credits">50</div>
+        <div class="cpkg-label">Credits</div>
+        <div class="cpkg-price">$0.99</div>
+        <div class="cpkg-per">$0.02 each</div>
+      </div>
+      <div class="cpkg popular" onclick="buyCredits(200,'$2.99')">
+        <div class="cpkg-badge">⭐ Popular</div>
+        <div class="cpkg-emoji">💫</div>
+        <div class="cpkg-credits">200</div>
+        <div class="cpkg-label">Credits</div>
+        <div class="cpkg-price">$2.99</div>
+        <div class="cpkg-per">$0.015 each</div>
+      </div>
+      <div class="cpkg" onclick="buyCredits(500,'$5.99')">
+        <div class="cpkg-emoji">🚀</div>
+        <div class="cpkg-credits">500</div>
+        <div class="cpkg-label">Credits</div>
+        <div class="cpkg-price">$5.99</div>
+        <div class="cpkg-per">$0.012 each</div>
+      </div>
+      <div class="cpkg" onclick="buyCredits(1200,'$9.99')">
+        <div class="cpkg-badge">💰 Best Value</div>
+        <div class="cpkg-emoji">💎</div>
+        <div class="cpkg-credits">1200</div>
+        <div class="cpkg-label">Credits</div>
+        <div class="cpkg-price">$9.99</div>
+        <div class="cpkg-per">$0.008 each</div>
+      </div>
+    </div>
+    <div class="spend-title">What you can do with credits</div>
+    <div class="spend-list">
+      <div class="spend-item">
+        <div class="spend-ico">👋</div>
+        <div class="spend-info"><div class="spend-name">Super Wave</div><div class="spend-desc">Stand out with an animated wave</div></div>
+        <div class="spend-cost">💎 10</div>
+      </div>
+      <div class="spend-item">
+        <div class="spend-ico">📡</div>
+        <div class="spend-info"><div class="spend-name">Boost Visibility</div><div class="spend-desc">Appear #1 on radar for 1 hour</div></div>
+        <div class="spend-cost">💎 50</div>
+      </div>
+      <div class="spend-item">
+        <div class="spend-ico">👀</div>
+        <div class="spend-info"><div class="spend-name">See Who Viewed You</div><div class="spend-desc">See everyone who checked your profile</div></div>
+        <div class="spend-cost">💎 5</div>
+      </div>
+      <div class="spend-item">
+        <div class="spend-ico">🎨</div>
+        <div class="spend-info"><div class="spend-name">Custom Chat Theme</div><div class="spend-desc">Unlock exclusive chat colors</div></div>
+        <div class="spend-cost">💎 20</div>
+      </div>
+      <div class="spend-item">
+        <div class="spend-ico">🎭</div>
+        <div class="spend-info"><div class="spend-name">Sticker Pack</div><div class="spend-desc">Fun animated stickers to send</div></div>
+        <div class="spend-cost">💎 30</div>
+      </div>
+    </div>
+    <button class="join-btn" onclick="closeModal('credits-modal')" style="background:var(--glass2);box-shadow:none;border:1px solid var(--border2);color:var(--text2)">Close</button>
+  </div>
+</div>
+
 <!-- CHAT OPTIONS -->
 <div class="modal-overlay" id="chat-options-modal">
   <div class="modal">
@@ -719,6 +884,114 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 <div class="toast" id="toast"></div>
 <script>
 
+
+
+
+// ── DELETE ACCOUNT ──
+function showDeleteConfirm(){showModal('delete-modal');}
+
+async function deleteAccount(){
+  closeModal('delete-modal');
+  showToast('🗑 Deleting your account…');
+  try{
+    // 1. Remove from presence table
+    await removePresence();
+
+    // 2. Delete all messages sent by user
+    try{await sb.from('messages').delete().eq('sender_id',me.id);}catch(e){}
+
+    // 3. Clear all local storage
+    localStorage.removeItem('cn_friends_'+me.id);
+    localStorage.removeItem('cn_groups_'+me.id);
+    localStorage.removeItem('cn_credits');
+
+    // 4. Sign out from Google/Supabase auth
+    try{await sb.auth.signOut();}catch(e){}
+
+    // 5. Stop all timers
+    if(scannerID)clearInterval(scannerID);
+    if(realtimeChannel)sb.removeChannel(realtimeChannel);
+
+    // 6. Reset all state
+    me={name:'',avatar:'😎',photoUrl:'',bio:'',mood:'Just chilling 🌊',id:'',waves:0,msgs:0,lat:null,lng:null};
+    nearby=[];friends=[];groups=[];msgCache={};
+    activePerson=null;activeGroup=null;
+    myCredits=0;
+
+    // 7. Go back to intro
+    document.getElementById('bottom-nav').style.display='none';
+    const intro=document.getElementById('s-intro');
+    if(intro){intro.style.display='flex';intro.classList.remove('hide');}
+    goScreen('s-onboard');
+
+    showToast('✅ Account deleted. Sorry to see you go!');
+  }catch(e){
+    showToast('⚠️ Something went wrong. Try again.');
+    console.error(e);
+  }
+}
+
+// ── CREDITS ──
+let myCredits = parseInt(localStorage.getItem('cn_credits') || '0');
+
+function saveCredits(){
+  localStorage.setItem('cn_credits', myCredits);
+  const d=document.getElementById('credits-display');if(d)d.textContent=myCredits;
+  const t=document.getElementById('credits-topbar');if(t)t.textContent='💎 '+myCredits;
+}
+
+function showCreditsModal(){showModal('credits-modal');}
+
+function spendCredits(amount, featureName){
+  if(myCredits < amount){
+    showToast('💎 Not enough credits! Buy more to use '+featureName);
+    showCreditsModal();
+    return false;
+  }
+  myCredits -= amount;
+  saveCredits();
+  showToast('✅ '+featureName+' unlocked! ('+myCredits+' credits left)');
+  return true;
+}
+
+function buyCredits(amount, price){
+  // In production this would open Stripe payment
+  // For now simulate purchase with a confirm dialog
+  if(confirm('Buy '+amount+' credits for '+price+'?\n\n(Stripe payment coming soon — credits added for free in demo)')){
+    myCredits += amount;
+    saveCredits();
+    closeModal('credits-modal');
+    showToast('🎉 '+amount+' credits added! You now have '+myCredits);
+  }
+}
+
+// Super Wave costs credits
+function superWave(pid){
+  if(!spendCredits(10, 'Super Wave'))return;
+  const p=nearby.find(x=>x.id===pid);if(!p)return;
+  me.waves++;document.getElementById('s-waves').textContent=me.waves;
+  pushMessage(chatKey(me.id,pid),{type:'wave',senderId:me.id,senderName:me.name,senderAv:me.avatar,text:'✨ '+me.name+' sent you a Super Wave!',ts:ts(),demo:p.demo});
+  showToast('✨ Super Wave sent to '+p.name+'!');
+}
+
+// Boost visibility
+let boostActive = false;
+let boostTimer = null;
+function boostVisibility(){
+  if(boostActive){showToast('📡 Boost already active!');return;}
+  if(!spendCredits(50,'Boost Visibility'))return;
+  boostActive=true;
+  showToast('🚀 You're boosted! Appearing #1 on radar for 1 hour');
+  boostTimer=setTimeout(()=>{boostActive=false;showToast('📡 Boost expired');},3600000);
+}
+
+// Init credits on load
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    const el=document.getElementById('credits-display');
+    if(el)el.textContent=myCredits;
+  },500);
+});
 
 // ── GOOGLE AUTH ──
 async function signInWithGoogle(){
@@ -1368,7 +1641,17 @@ function syncProfileUI(){
 }
 function toggleDisc(el){if(!el.checked){removePresence();showToast('👻 Invisible now');}else{broadcastPresence();showToast('📡 Discoverable again!');}}
 function editProfile(){document.getElementById('bottom-nav').style.cssText='display:none';goScreen('s-onboard');}
-function logout(){removePresence();if(scannerID)clearInterval(scannerID);if(realtimeChannel)sb.removeChannel(realtimeChannel);nearby=[];activePerson=null;activeGroup=null;msgCache={};document.getElementById('bottom-nav').style.display='none';goScreen('s-onboard');}
+async function logout(){
+  removePresence();
+  if(scannerID)clearInterval(scannerID);
+  if(realtimeChannel)sb.removeChannel(realtimeChannel);
+  nearby=[];activePerson=null;activeGroup=null;msgCache={};
+  try{await sb.auth.signOut();}catch(e){}
+  document.getElementById('bottom-nav').style.display='none';
+  goScreen('s-onboard');
+  const intro=document.getElementById('s-intro');
+  if(intro){intro.style.display='flex';intro.classList.remove('hide');}
+}
 
 // ── MODAL ──
 function showModal(id){document.getElementById(id)?.classList.add('show');}
@@ -1379,4 +1662,3 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 </script>
 </body>
 </html>
-
