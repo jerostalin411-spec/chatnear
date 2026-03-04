@@ -982,7 +982,7 @@ function boostVisibility(){
   if(boostActive){showToast('📡 Boost already active!');return;}
   if(!spendCredits(50,'Boost Visibility'))return;
   boostActive=true;
-  showToast('🚀 You're boosted! Appearing #1 on radar for 1 hour');
+  showToast('🚀 Boosted! Appearing #1 on radar for 1 hour');
   boostTimer=setTimeout(()=>{boostActive=false;showToast('📡 Boost expired');},3600000);
 }
 
