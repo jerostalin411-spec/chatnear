@@ -502,7 +502,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
       <div style="width:90px;height:90px;border-radius:28px;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;font-size:2.6rem;margin:0 auto;box-shadow:0 0 60px rgba(124,58,237,.5)">👋</div>
     </div>
     <div style="font-family:'Outfit',sans-serif;font-size:2.8rem;font-weight:900;letter-spacing:-.06em;margin-bottom:8px;background:linear-gradient(135deg,#fff,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;z-index:1;position:relative">ChatNear</div>
-    <div style="font-size:.92rem;color:rgba(148,163,184,.7);margin-bottom:36px;z-index:1;position:relative">Meet people around you, instantly</div>
+    <div style="font-size:.92rem;color:rgba(148,163,184,.7);margin-bottom:36px;z-index:1;position:relative">Sign in to meet people around you</div>
     <div style="display:flex;gap:20px;margin-bottom:36px;z-index:1;position:relative">
       <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:44px;height:44px;border-radius:14px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem">📡</div><div style="font-size:.62rem;font-weight:600;color:rgba(148,163,184,.5);text-transform:uppercase;letter-spacing:.08em">Radar</div></div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:44px;height:44px;border-radius:14px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem">💬</div><div style="font-size:.62rem;font-weight:600;color:rgba(148,163,184,.5);text-transform:uppercase;letter-spacing:.08em">Chat</div></div>
@@ -513,13 +513,8 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px" alt="G">
       Continue with Google
     </button>
-    <div style="display:flex;align-items:center;gap:10px;width:100%;max-width:300px;margin:2px 0 10px;position:relative;z-index:10">
-      <div style="flex:1;height:1px;background:rgba(255,255,255,.1)"></div>
-      <span style="font-size:.72rem;color:rgba(148,163,184,.4)">or</span>
-      <div style="flex:1;height:1px;background:rgba(255,255,255,.1)"></div>
-    </div>
-    <button onclick="goToHome()" style="width:100%;max-width:300px;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;padding:15px 24px;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;position:relative;z-index:10;box-shadow:0 8px 32px rgba(124,58,237,.4)">Continue as Guest →</button>
-    <div id="auth-loading" style="display:none;flex-direction:column;align-items:center;gap:10px;margin-top:16px;z-index:10;position:relative">
+
+    <div id="auth-loading" style="display:none!important;flex-direction:column;align-items:center;gap:10px;margin-top:16px;z-index:10;position:relative">
       <div style="width:28px;height:28px;border-radius:50%;border:3px solid rgba(124,58,237,.2);border-top-color:#7c3aed;animation:spin .8s linear infinite"></div>
       <div style="font-size:.8rem;color:rgba(148,163,184,.6)">Signing you in…</div>
     </div>
@@ -536,16 +531,16 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
       <div class="home-hero-logo">👋</div>
       <h1 class="home-hero-title">Create your<br><span class="g">profile</span></h1>
       <p class="home-hero-sub">Set up your profile to start meeting people nearby</p>
-      <div class="user-logged-in" id="user-logged-in" style="margin:12px auto 0">
+      <div class="user-logged-in" id="user-logged-in" style="display:none!important;margin:12px auto 0">
         <div class="uli-av"><img id="google-av" src="" alt=""></div>
         <span class="uli-name" id="google-name">Signed in</span>
         <span class="uli-check">✓</span>
       </div>
     </div>
-    <div class="home-form">
+    <div class="home-form" autocomplete="off">
       <div class="hf-section">
         <div class="hf-label">Your Name</div>
-        <input class="hf-input" id="inp-name" placeholder="What do people call you?" maxlength="24">
+        <input class="hf-input" id="inp-name" placeholder="What do people call you?" maxlength="24" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="no-autofill-name">
       </div>
       <div class="hf-section">
         <div class="hf-label">Profile Photo</div>
@@ -563,7 +558,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
       </div>
       <div class="hf-section">
         <div class="hf-label">Bio <span>(optional)</span></div>
-        <input class="hf-input" id="inp-bio" placeholder="Something about you…" maxlength="60">
+        <input class="hf-input" id="inp-bio" placeholder="Something about you…" maxlength="60" autocomplete="off" autocorrect="off" name="no-autofill-bio">
       </div>
       <div class="hf-section">
         <div class="hf-label">Current Vibe</div>
@@ -788,6 +783,13 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
   <div class="credits-modal">
     <div class="credits-modal-title">💎 Buy Credits</div>
     <div class="credits-modal-sub">Use credits to unlock premium features</div>
+    <div id="free-credits-banner" style="background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(6,182,212,.08));border:1px solid rgba(16,185,129,.25);border-radius:14px;padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <div style="font-size:1.6rem">🎁</div>
+      <div>
+        <div style="font-size:.82rem;font-weight:700;color:#10b981;margin-bottom:2px">15 Free Starter Credits!</div>
+        <div style="font-size:.72rem;color:rgba(148,163,184,.7)">Every new user gets 15 credits free. Buy more anytime.</div>
+      </div>
+    </div>
     <div class="credits-packages">
       <div class="cpkg" onclick="buyCredits(50,'$0.99')">
         <div class="cpkg-emoji">⚡</div>
@@ -884,6 +886,21 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 
 <div class="toast" id="toast"></div>
 <script>
+// Force clear form fields immediately before any JS runs
+document.addEventListener('DOMContentLoaded', function(){
+  const n = document.getElementById('inp-name');
+  const b = document.getElementById('inp-bio');
+  if(n) n.value = '';
+  if(b) b.value = '';
+});
+// Also clear after window loads (catches browser autofill)
+window.addEventListener('load', function(){
+  const n = document.getElementById('inp-name');
+  const b = document.getElementById('inp-bio');
+  if(n) n.value = '';
+  if(b) b.value = '';
+});
+
 
 
 
@@ -891,49 +908,17 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 // ── DELETE ACCOUNT ──
 function showDeleteConfirm(){showModal('delete-modal');}
 
-async function deleteAccount(){
-  closeModal('delete-modal');
-  showToast('🗑 Deleting your account…');
-  try{
-    // 1. Remove from presence table
-    await removePresence();
-
-    // 2. Delete all messages sent by user
-    try{await sb.from('messages').delete().eq('sender_id',me.id);}catch(e){}
-
-    // 3. Clear all local storage
-    localStorage.removeItem('cn_friends_'+me.id);
-    localStorage.removeItem('cn_groups_'+me.id);
-    localStorage.removeItem('cn_credits');
-
-    // 4. Sign out from Google/Supabase auth
-    try{await sb.auth.signOut();}catch(e){}
-
-    // 5. Stop all timers
-    if(scannerID)clearInterval(scannerID);
-    if(realtimeChannel)sb.removeChannel(realtimeChannel);
-
-    // 6. Reset all state
-    me={name:'',avatar:'😎',photoUrl:'',bio:'',mood:'Just chilling 🌊',id:'',waves:0,msgs:0,lat:null,lng:null};
-    nearby=[];friends=[];groups=[];msgCache={};
-    activePerson=null;activeGroup=null;
-    myCredits=0;
-
-    // 7. Go back to intro
-    document.getElementById('bottom-nav').style.display='none';
-    const intro=document.getElementById('s-intro');
-    if(intro){intro.style.display='flex';intro.style.opacity='1';intro.style.transform='none';}
-    goScreen('s-onboard');
-
-    showToast('✅ Account deleted. Sorry to see you go!');
-  }catch(e){
-    showToast('⚠️ Something went wrong. Try again.');
-    console.error(e);
-  }
-}
-
 // ── CREDITS ──
-let myCredits = parseInt(localStorage.getItem('cn_credits') || '0');
+// Give 15 free starter credits to new users
+let myCredits = 0;
+if(localStorage.getItem('cn_credits') === null){
+  // First time user - give free credits
+  myCredits = 15;
+  localStorage.setItem('cn_credits', '15');
+  localStorage.setItem('cn_credits_welcomed', 'true');
+} else {
+  myCredits = parseInt(localStorage.getItem('cn_credits') || '0');
+}
 
 function saveCredits(){
   localStorage.setItem('cn_credits', myCredits);
@@ -994,9 +979,38 @@ window.addEventListener('load',()=>{
   },500);
 });
 
+
+function clearProfileForm(){
+  // Clear all form fields
+  const nameEl = document.getElementById('inp-name');
+  const bioEl = document.getElementById('inp-bio');
+  if(nameEl) nameEl.value = '';
+  if(bioEl) bioEl.value = '';
+
+  // Reset avatar to default
+  myPhotoDataUrl = '';
+  const prev = document.getElementById('photo-preview');
+  if(prev){ prev.innerHTML = '😎'; prev.style.fontSize = '1.8rem'; }
+
+  // Reset avatar grid selection
+  document.querySelectorAll('.hf-av').forEach(x => x.classList.remove('sel'));
+  const firstAv = document.querySelector('.hf-av');
+  if(firstAv) firstAv.classList.add('sel');
+
+  // Reset mood selection
+  document.querySelectorAll('.hf-mood').forEach(x => x.classList.remove('sel'));
+  const firstMood = document.querySelector('.hf-mood');
+  if(firstMood) firstMood.classList.add('sel');
+
+  // Hide google signed-in badge
+  const badge = document.getElementById('user-logged-in');
+  if(badge) badge.style.display = 'none';
+}
+
 // ── GOOGLE AUTH ──
 async function signInWithGoogle(){
-  document.getElementById('auth-loading').style.display='flex';
+  
+  document.getElementById('auth-loading').style.cssText='display:flex!important;flex-direction:column;align-items:center;gap:10px;margin-top:16px;z-index:10;position:relative';
   try{
     const {data,error}=await sb.auth.signInWithOAuth({
       provider:'google',
@@ -1004,63 +1018,64 @@ async function signInWithGoogle(){
     });
     if(error)throw error;
   }catch(e){
-    document.getElementById('auth-loading').style.display='none';
+    document.getElementById('auth-loading').style.cssText='display:none!important;flex-direction:column;align-items:center;gap:10px;margin-top:16px;z-index:10;position:relative';
     showToast('⚠️ Google sign in failed. Try again.');
     console.error(e);
   }
 }
 
 async function checkAuthSession(){
+  resetForm();
   const {data:{session}}=await sb.auth.getSession();
   if(session){
     const user=session.user;
     const meta=user.user_metadata||{};
-    // Pre-fill name and photo from Google
     const gName=meta.full_name||meta.name||'';
     const gPhoto=meta.avatar_url||meta.picture||'';
     const gEmail=user.email||'';
-    if(gName){
-      document.getElementById('inp-name').value=gName;
-    }
+    if(gName)document.getElementById('inp-name').value=gName;
     if(gPhoto){
       myPhotoDataUrl=gPhoto;
       const prev=document.getElementById('photo-preview');
       prev.innerHTML=`<img src="${gPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:18px">`;
-      // Show logged in badge
       const badge=document.getElementById('user-logged-in');
       const avEl=document.getElementById('google-av');
       const nameEl=document.getElementById('google-name');
-      if(badge){badge.style.display='flex';}
-      if(avEl){avEl.src=gPhoto;}
-      if(nameEl){nameEl.textContent=gName||gEmail;}
+      if(badge)badge.style.display='flex';
+      if(avEl)avEl.src=gPhoto;
+      if(nameEl)nameEl.textContent=gName||gEmail;
     }
-    // Hide intro, go straight to home
     const intro=document.getElementById('s-intro');
-    if(intro){intro.style.display='none';}
+    if(intro)intro.style.display='none';
     goScreen('s-onboard');
-    showToast('👋 Welcome back, '+( gName.split(' ')[0]||'there')+'!');
+    showToast('👋 Welcome back, '+(gName.split(' ')[0]||'there')+'!');
   }
 }
 
 // Check session on load
 window.addEventListener('load', ()=>{
+  // Clear immediately and keep clearing to fight browser autocomplete
+  resetForm();
+  setTimeout(()=>resetForm(), 100);
+  setTimeout(()=>resetForm(), 300);
+  setTimeout(()=>resetForm(), 600);
   checkAuthSession();
   // Listen for auth state changes
   sb.auth.onAuthStateChange((event,session)=>{
     if(event==='SIGNED_IN'&&session){
       checkAuthSession();
     }
+    if(event==='SIGNED_OUT'){
+      // Always clear the form on sign out
+      clearProfileForm();
+      document.getElementById('inp-name').value='';
+      document.getElementById('inp-bio').value='';
+    }
   });
 });
 
 // ── INTRO ──
-function goToHome(){
-  const intro=document.getElementById('s-intro');
-  intro.style.opacity='0';
-  intro.style.transform='scale(1.04)';
-  setTimeout(()=>{intro.style.display='none';},500);
-  goScreen('s-onboard');
-}
+// guest mode removed
 
 // particles removed
 
@@ -1071,6 +1086,91 @@ setInterval(()=>{
   dots.forEach((d,i)=>d.classList.toggle('active',i===introDotIdx));
   introDotIdx=(introDotIdx+1)%dots.length;
 },1800);
+
+
+// clearProfileForm defined above
+// ── RESET FORM - always called when returning to intro ──
+function resetForm(){
+  try{
+    const nameEl=document.getElementById('inp-name');
+    const bioEl=document.getElementById('inp-bio');
+    if(nameEl){nameEl.value='';nameEl.setAttribute('value','');}
+    if(bioEl){bioEl.value='';bioEl.setAttribute('value','');}
+    myPhotoDataUrl='';
+    const prev=document.getElementById('photo-preview');
+    if(prev){prev.innerHTML='😎';prev.style.fontSize='1.8rem';}
+    document.querySelectorAll('.hf-av').forEach(x=>x.classList.remove('sel'));
+    const firstAv=document.querySelector('[data-av="😎"]');
+    if(firstAv)firstAv.classList.add('sel');
+    document.querySelectorAll('.hf-mood').forEach(x=>x.classList.remove('sel'));
+    const firstMood=document.querySelector('.hf-mood');
+    if(firstMood)firstMood.classList.add('sel');
+    const badge=document.getElementById('user-logged-in');
+    if(badge)badge.style.display='none';
+  }catch(e){}
+}
+
+
+// ── NUKE - complete reset, called on logout and delete ──
+async function nukeSession(){
+  // 1. Stop all timers and connections
+  if(scannerID)clearInterval(scannerID);
+  if(realtimeChannel)try{sb.removeChannel(realtimeChannel);}catch(e){}
+
+  // 2. Remove from Supabase presence
+  try{await sb.from('presence').delete().eq('id',me.id);}catch(e){}
+
+  // 3. Sign out from Google/Supabase
+  try{await sb.auth.signOut();}catch(e){}
+
+  // 4. Wipe ALL localStorage
+  localStorage.clear();
+
+  // 5. Reset ALL JS state
+  me={name:'',avatar:'😎',photoUrl:'',bio:'',mood:'Just chilling 🌊',id:'',waves:0,msgs:0,lat:null,lng:null};
+  nearby=[];friends=[];groups=[];msgCache={};
+  activePerson=null;activeGroup=null;
+  myCredits=0;
+  isRecording=false;
+  disappearingMode=false;
+
+  // 6. Clear the form fields directly - no function calls
+  const nameInp=document.getElementById('inp-name');
+  const bioInp=document.getElementById('inp-bio');
+  if(nameInp)nameInp.value='';
+  if(bioInp)bioInp.value='';
+  myPhotoDataUrl='';
+  const prev=document.getElementById('photo-preview');
+  if(prev){prev.innerHTML='😎';prev.style.fontSize='1.8rem';}
+  document.querySelectorAll('.hf-av').forEach(x=>x.classList.remove('sel'));
+  const defAv=document.querySelector('[data-av="😎"]');
+  if(defAv)defAv.classList.add('sel');
+  document.querySelectorAll('.hf-mood').forEach(x=>x.classList.remove('sel'));
+  const defMood=document.querySelector('.hf-mood');
+  if(defMood)defMood.classList.add('sel');
+  const badge=document.getElementById('user-logged-in');
+  if(badge)badge.style.display='none';
+
+  // 7. Hide bottom nav
+  document.getElementById('bottom-nav').style.display='none';
+
+  // 8. Show intro screen only - hide all other screens
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const intro=document.getElementById('s-intro');
+  if(intro){intro.style.display='flex';intro.style.opacity='1';intro.style.transform='scale(1)';}
+}
+
+async function logout(){
+  showToast('👋 Logged out!');
+  await nukeSession();
+}
+
+async function deleteAccount(){
+  closeModal('delete-modal');
+  showToast('🗑 Account deleted!');
+  try{await sb.from('messages').delete().eq('sender_id',me.id);}catch(e){}
+  await nukeSession();
+}
 
 // ── SUPABASE ──
 const SUPABASE_URL='https://phxydxghhtrpwibvuwxr.supabase.co';
@@ -1144,6 +1244,9 @@ async function joinChatNear(){
   subscribeRealtime();
   loadFriends();loadGroups();
   showToast('👋 You\'re live, '+n+'!');
+  if(localStorage.getItem('cn_credits_welcomed') === 'true' && myCredits === 15){
+    setTimeout(()=>showToast('🎁 You got 15 free starter credits!'), 2000);
+  }
 }
 
 // ── GPS ──
@@ -1622,17 +1725,6 @@ function syncProfileUI(){
 }
 function toggleDisc(el){if(!el.checked){removePresence();showToast('👻 Invisible now');}else{broadcastPresence();showToast('📡 Discoverable again!');}}
 function editProfile(){document.getElementById('bottom-nav').style.cssText='display:none';goScreen('s-onboard');}
-async function logout(){
-  removePresence();
-  if(scannerID)clearInterval(scannerID);
-  if(realtimeChannel)sb.removeChannel(realtimeChannel);
-  nearby=[];activePerson=null;activeGroup=null;msgCache={};
-  try{await sb.auth.signOut();}catch(e){}
-  document.getElementById('bottom-nav').style.display='none';
-  goScreen('s-onboard');
-  const intro=document.getElementById('s-intro');
-  if(intro){intro.style.display='flex';intro.style.opacity='1';intro.style.transform='none';}
-}
 
 // ── MODAL ──
 function showModal(id){document.getElementById(id)?.classList.add('show');}
