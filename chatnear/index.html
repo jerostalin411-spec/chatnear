@@ -922,7 +922,7 @@ async function deleteAccount(){
     // 7. Go back to intro
     document.getElementById('bottom-nav').style.display='none';
     const intro=document.getElementById('s-intro');
-    if(intro){intro.style.display='flex';intro.classList.remove('hide');}
+    if(intro){intro.style.display='flex';intro.style.opacity='1';intro.style.transform='none';}
     goScreen('s-onboard');
 
     showToast('✅ Account deleted. Sorry to see you go!');
@@ -1056,33 +1056,13 @@ window.addEventListener('load', ()=>{
 // ── INTRO ──
 function goToHome(){
   const intro=document.getElementById('s-intro');
-  intro.classList.add('hide');
-  setTimeout(()=>{intro.style.display='none';},700);
+  intro.style.opacity='0';
+  intro.style.transform='scale(1.04)';
+  setTimeout(()=>{intro.style.display='none';},500);
   goScreen('s-onboard');
 }
 
-function spawnParticles(){
-  const container=document.getElementById('intro-particles');
-  if(!container)return;
-  const colors=['#7c3aed','#a855f7','#ec4899','#06b6d4','#10b981','#f59e0b'];
-  for(let i=0;i<18;i++){
-    const p=document.createElement('div');
-    p.className='iparticle';
-    const size=Math.random()*6+3;
-    p.style.cssText=`
-      width:${size}px;height:${size}px;
-      left:${Math.random()*100}%;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${4+Math.random()*6}s;
-      animation-delay:${Math.random()*4}s;
-      opacity:.6;
-      filter:blur(${Math.random()*2}px);
-      box-shadow:0 0 ${size*3}px currentColor;
-    `;
-    container.appendChild(p);
-  }
-}
-spawnParticles();
+// particles removed
 
 // Animate intro dots
 let introDotIdx=0;
@@ -1651,7 +1631,7 @@ async function logout(){
   document.getElementById('bottom-nav').style.display='none';
   goScreen('s-onboard');
   const intro=document.getElementById('s-intro');
-  if(intro){intro.style.display='flex';intro.classList.remove('hide');}
+  if(intro){intro.style.display='flex';intro.style.opacity='1';intro.style.transform='none';}
 }
 
 // ── MODAL ──
