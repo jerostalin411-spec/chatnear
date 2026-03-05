@@ -1378,21 +1378,23 @@ async function deleteAccount(){
 // ── PHOTO UPLOAD ──
 async function uploadPhotoToStorage(file, userId){
   try{
-    const ext=file.name.split('.').pop()||'jpg';
+    const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
     const path=`${userId}.${ext}`;
-    // Delete old photo first
-    await sb.storage.from('avatars').remove([path]);
-    // Upload new photo
     const {data,error}=await sb.storage.from('avatars').upload(path, file, {
       cacheControl:'3600',
       upsert:true,
-      contentType:file.type
+      contentType:file.type||'image/jpeg'
     });
-    if(error)throw error;
-    // Get public URL
+    if(error){
+      showToast('Upload error: '+error.message);
+      console.error('Upload error:',error);
+      return null;
+    }
     const {data:{publicUrl}}=sb.storage.from('avatars').getPublicUrl(path);
+    console.log('Uploaded photo URL:',publicUrl);
     return publicUrl;
   }catch(e){
+    showToast('Upload failed: '+e.message);
     console.error('Upload error:',e);
     return null;
   }
@@ -1549,8 +1551,22 @@ function sendPushNotif(title,body){
 
 // ── PRESENCE ──
 async function broadcastPresence(){
-  if(!document.getElementById('tog-disc')?.checked)return;
-  try{await sb.from('presence').upsert({id:me.id,name:me.name,avatar:me.avatar,photo_url:me.photoUrl||'',bio:me.bio||'',mood:me.mood,lat:me.lat,lng:me.lng,updated_at:new Date().toISOString()},{onConflict:'id'});}catch(e){}
+  if(!me.id)return;
+  // broadcast even without GPS so user appears on radar
+  try{
+    const {error}=await sb.from('presence').upsert({
+      id:me.id,
+      name:me.name,
+      avatar:me.avatar,
+      photo_url:me.photoUrl||'',
+      bio:me.bio||'',
+      mood:me.mood,
+      lat:me.lat||0,
+      lng:me.lng||0,
+      updated_at:new Date().toISOString()
+    },{onConflict:'id'});
+    if(error)console.error('broadcastPresence error:',error.message);
+  }catch(e){console.error('broadcastPresence:',e);}
 }
 async function removePresence(){try{await sb.from('presence').delete().eq('id',me.id);}catch(e){}}
 
@@ -1561,7 +1577,9 @@ async function doScan(){
     const {data}=await sb.from('presence').select('*').neq('id',me.id).gte('updated_at',cutoff);
     if(data)real=data.filter(p=>!blockedIds.has(p.id)).map((p,i)=>{
       let dist=Math.floor(Math.random()*70+5);
-      if(me.lat&&me.lng&&p.lat&&p.lng)dist=calcDist(me.lat,me.lng,p.lat,p.lng);
+      if(me.lat&&me.lng&&p.lat&&p.lng&&(p.lat!==0||p.lng!==0)){
+        dist=calcDist(me.lat,me.lng,p.lat,p.lng);
+      }
       return{...p,dist,ci:Math.abs((p.id.charCodeAt(2)||0))%6,real:true};
     });
   }catch(e){}
