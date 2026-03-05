@@ -1389,6 +1389,7 @@ const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 // ── STATE ──
 let me={name:'',avatar:'😎',photoUrl:'',bio:'',mood:'Just chilling 🌊',id:'',waves:0,msgs:0,lat:null,lng:null};
+let editPhotoDataUrl='';
 let nearby=[],friends=[],groups=[],blockedIds=new Set();
 let activePerson=null,activeGroup=null,pendingWave=null;
 let msgCache={},lastSeenTs={};
@@ -1413,7 +1414,7 @@ document.getElementById('edit-av-grid')?.addEventListener('click',e=>{
   t.classList.add('sel');
   const prev=document.getElementById('edit-av-preview');
   prev.innerHTML=t.dataset.av;
-  prev.dataset.photo='';
+  editPhotoDataUrl=''; // clear photo when emoji picked
 });
 document.getElementById('edit-mood-grid')?.addEventListener('click',e=>{
   const t=e.target.closest('.edit-mood');if(!t)return;
@@ -2048,6 +2049,7 @@ function editProfile(){
   const selMood = document.querySelector(`.edit-mood[data-mood="${me.mood}"]`);
   if(selMood) selMood.classList.add('sel');
 
+  editPhotoDataUrl='';
   showModal('edit-profile-modal');
 }
 
@@ -2055,10 +2057,9 @@ function handleEditPhoto(input){
   const file=input.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=e=>{
-    const url=e.target.result;
+    editPhotoDataUrl=e.target.result;
     const prev=document.getElementById('edit-av-preview');
-    prev.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:18px">`;
-    prev.dataset.photo=url;
+    prev.innerHTML=`<img src="${editPhotoDataUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:18px">`;
     document.querySelectorAll('.edit-av-opt').forEach(x=>x.classList.remove('sel'));
   };
   reader.readAsDataURL(file);
@@ -2071,8 +2072,7 @@ async function saveProfile(){
   const bio=document.getElementById('edit-bio').value.trim();
   const mood=document.querySelector('.edit-mood.sel')?.dataset?.mood||me.mood;
   const av=document.querySelector('.edit-av-opt.sel')?.dataset?.av||me.avatar;
-  const photoPrev=document.getElementById('edit-av-preview');
-  const newPhoto=photoPrev.dataset.photo||me.photoUrl||'';
+  const newPhoto=editPhotoDataUrl||me.photoUrl||'';
 
   // Show saving state
   const btn=document.getElementById('edit-save-btn');
