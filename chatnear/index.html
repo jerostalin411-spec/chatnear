@@ -90,6 +90,30 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 .locked-badge{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#000;font-size:.7rem;font-weight:700;padding:5px 12px;border-radius:999px;display:flex;align-items:center;gap:5px}
 
 
+
+/* ── EDIT PROFILE MODAL ── */
+.edit-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:24px 24px 0 0;padding:22px;width:100%;max-width:430px;animation:slideUp .3s cubic-bezier(.34,1.56,.64,1);max-height:85vh;overflow-y:auto}
+.edit-av-wrap{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.edit-av-circle{width:68px;height:68px;border-radius:20px;background:var(--glass2);border:2px dashed var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.9rem;cursor:pointer;overflow:hidden;flex-shrink:0;transition:all .2s}
+.edit-av-circle:hover{border-color:var(--neon);background:rgba(124,58,237,.08)}
+.edit-av-circle img{width:100%;height:100%;object-fit:cover}
+.edit-av-info .edit-av-btn{font-size:.78rem;font-weight:600;color:var(--neon2);cursor:pointer;display:block;margin-bottom:3px}
+.edit-av-info .edit-av-sub{font-size:.68rem;color:var(--text3)}
+.edit-field{margin-bottom:14px}
+.edit-field-label{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:7px;display:block}
+.edit-inp{width:100%;background:var(--glass2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-family:var(--ff);font-size:.9rem;color:var(--text);outline:none;transition:all .2s}
+.edit-inp:focus{border-color:rgba(124,58,237,.4);background:var(--glass3)}
+.edit-inp::placeholder{color:var(--text3)}
+.edit-emoji-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.edit-av-opt{width:40px;height:40px;border-radius:11px;border:2px solid var(--border);background:var(--glass);font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.edit-av-opt:hover,.edit-av-opt.sel{border-color:var(--neon);background:rgba(124,58,237,.12)}
+.edit-mood-grid{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px}
+.edit-mood{font-size:.74rem;font-weight:500;padding:6px 12px;border-radius:999px;border:1px solid var(--border);background:var(--glass);color:var(--text2);cursor:pointer;transition:all .2s}
+.edit-mood:hover,.edit-mood.sel{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:var(--amber)}
+.edit-save-btn{width:100%;font-family:var(--ff);font-size:1rem;font-weight:700;padding:15px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--neon),var(--pink));color:#fff;margin-top:6px;transition:all .2s;box-shadow:0 6px 24px rgba(124,58,237,.3)}
+.edit-save-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(124,58,237,.4)}
+.edit-saving{opacity:.6;pointer-events:none}
+
 /* ── DELETE ACCOUNT ── */
 .danger-zone{background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.15);border-radius:14px;padding:14px 16px;margin-bottom:20px}
 .danger-zone-title{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(239,68,68,.6);margin-bottom:10px}
@@ -758,6 +782,54 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 
 
 
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal-overlay" id="edit-profile-modal">
+  <div class="edit-modal">
+    <div class="modal-hdr">Edit Profile <div class="modal-x" onclick="closeModal('edit-profile-modal')">✕</div></div>
+    <div class="edit-av-wrap">
+      <div class="edit-av-circle" id="edit-av-preview" onclick="document.getElementById('edit-photo-input').click()">😎</div>
+      <div class="edit-av-info">
+        <span class="edit-av-btn" onclick="document.getElementById('edit-photo-input').click()">Change photo</span>
+        <span class="edit-av-sub">Or pick an emoji below</span>
+      </div>
+      <input type="file" id="edit-photo-input" accept="image/*" style="display:none" onchange="handleEditPhoto(this)">
+    </div>
+    <div class="edit-emoji-grid" id="edit-av-grid">
+      <div class="edit-av-opt" data-av="😎">😎</div>
+      <div class="edit-av-opt" data-av="🦊">🦊</div>
+      <div class="edit-av-opt" data-av="🐻">🐻</div>
+      <div class="edit-av-opt" data-av="🐸">🐸</div>
+      <div class="edit-av-opt" data-av="🦁">🦁</div>
+      <div class="edit-av-opt" data-av="🐯">🐯</div>
+      <div class="edit-av-opt" data-av="🐼">🐼</div>
+      <div class="edit-av-opt" data-av="🤖">🤖</div>
+      <div class="edit-av-opt" data-av="👽">👽</div>
+      <div class="edit-av-opt" data-av="🧙">🧙</div>
+    </div>
+    <div class="edit-field" style="margin-top:16px">
+      <span class="edit-field-label">Name</span>
+      <input class="edit-inp" id="edit-name" placeholder="Your name" maxlength="24">
+    </div>
+    <div class="edit-field">
+      <span class="edit-field-label">Bio <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">(optional)</span></span>
+      <input class="edit-inp" id="edit-bio" placeholder="Something about you…" maxlength="60">
+    </div>
+    <div class="edit-field">
+      <span class="edit-field-label">Current Vibe</span>
+      <div class="edit-mood-grid" id="edit-mood-grid">
+        <div class="edit-mood" data-mood="Just chilling 🌊">Just chilling 🌊</div>
+        <div class="edit-mood" data-mood="Looking to chat 💬">Looking to chat 💬</div>
+        <div class="edit-mood" data-mood="Up for anything 🎲">Up for anything 🎲</div>
+        <div class="edit-mood" data-mood="Exploring 🗺️">Exploring 🗺️</div>
+        <div class="edit-mood" data-mood="Need food recs 🍕">Need food recs 🍕</div>
+        <div class="edit-mood" data-mood="Gaming nearby? 🎮">Gaming nearby? 🎮</div>
+      </div>
+    </div>
+    <button class="edit-save-btn" id="edit-save-btn" onclick="saveProfile()">Save Changes</button>
+  </div>
+</div>
+
 <!-- DELETE ACCOUNT MODAL -->
 <div class="modal-overlay" id="delete-modal">
   <div class="modal">
@@ -1259,6 +1331,21 @@ function chatKey(a,b){return a<b?a+'_'+b:b+'_'+a}
 function calcDist(la1,lo1,la2,lo2){const R=6371000,dL=(la2-la1)*Math.PI/180,dl=(lo2-lo1)*Math.PI/180;const a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dl/2)**2;return Math.round(R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));}
 
 // ── ONBOARDING ──
+// Edit profile grid handlers
+document.getElementById('edit-av-grid')?.addEventListener('click',e=>{
+  const t=e.target.closest('.edit-av-opt');if(!t)return;
+  document.querySelectorAll('.edit-av-opt').forEach(x=>x.classList.remove('sel'));
+  t.classList.add('sel');
+  const prev=document.getElementById('edit-av-preview');
+  prev.innerHTML=t.dataset.av;
+  prev.dataset.photo='';
+});
+document.getElementById('edit-mood-grid')?.addEventListener('click',e=>{
+  const t=e.target.closest('.edit-mood');if(!t)return;
+  document.querySelectorAll('.edit-mood').forEach(x=>x.classList.remove('sel'));
+  t.classList.add('sel');
+});
+
 document.getElementById('av-row').addEventListener('click',e=>{
   const t=e.target.closest('.hf-av');if(!t)return;
   document.querySelectorAll('.hf-av').forEach(x=>x.classList.remove('sel'));t.classList.add('sel');
@@ -1787,7 +1874,82 @@ function syncProfileUI(){
   document.getElementById('s-friends-count').textContent=friends.length;
 }
 function toggleDisc(el){if(!el.checked){removePresence();showToast('👻 Invisible now');}else{broadcastPresence();showToast('📡 Discoverable again!');}}
-function editProfile(){document.getElementById('bottom-nav').style.cssText='display:none';goScreen('s-onboard');}
+function editProfile(){
+  // Pre-fill modal with current values
+  document.getElementById('edit-name').value = me.name||'';
+  document.getElementById('edit-bio').value = me.bio||'';
+
+  // Set avatar preview
+  const prev = document.getElementById('edit-av-preview');
+  if(me.photoUrl){
+    prev.innerHTML=`<img src="${me.photoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:18px">`;
+  } else {
+    prev.innerHTML = me.avatar||'😎';
+  }
+
+  // Set selected avatar
+  document.querySelectorAll('.edit-av-opt').forEach(x=>x.classList.remove('sel'));
+  const selAv = document.querySelector(`.edit-av-opt[data-av="${me.avatar}"]`);
+  if(selAv) selAv.classList.add('sel');
+
+  // Set selected mood
+  document.querySelectorAll('.edit-mood').forEach(x=>x.classList.remove('sel'));
+  const selMood = document.querySelector(`.edit-mood[data-mood="${me.mood}"]`);
+  if(selMood) selMood.classList.add('sel');
+
+  showModal('edit-profile-modal');
+}
+
+function handleEditPhoto(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const url=e.target.result;
+    const prev=document.getElementById('edit-av-preview');
+    prev.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:18px">`;
+    prev.dataset.photo=url;
+    document.querySelectorAll('.edit-av-opt').forEach(x=>x.classList.remove('sel'));
+  };
+  reader.readAsDataURL(file);
+}
+
+async function saveProfile(){
+  const name=document.getElementById('edit-name').value.trim();
+  if(!name){showToast('⚠️ Name cannot be empty!');return;}
+
+  const bio=document.getElementById('edit-bio').value.trim();
+  const mood=document.querySelector('.edit-mood.sel')?.dataset?.mood||me.mood;
+  const av=document.querySelector('.edit-av-opt.sel')?.dataset?.av||me.avatar;
+  const photoPrev=document.getElementById('edit-av-preview');
+  const newPhoto=photoPrev.dataset.photo||me.photoUrl||'';
+
+  // Show saving state
+  const btn=document.getElementById('edit-save-btn');
+  btn.textContent='Saving…';
+  btn.classList.add('edit-saving');
+
+  // Update me object
+  me.name=name;
+  me.bio=bio;
+  me.mood=mood;
+  me.avatar=av;
+  me.photoUrl=newPhoto;
+  myPhotoDataUrl=newPhoto;
+
+  // Save to Supabase
+  try{
+    await saveUserToDB(me);
+    await broadcastPresence();
+    syncProfileUI();
+    closeModal('edit-profile-modal');
+    showToast('✅ Profile saved!');
+  }catch(e){
+    showToast('⚠️ Could not save. Try again.');
+  }
+
+  btn.textContent='Save Changes';
+  btn.classList.remove('edit-saving');
+}
 
 // ── MODAL ──
 function showModal(id){document.getElementById(id)?.classList.add('show');}
