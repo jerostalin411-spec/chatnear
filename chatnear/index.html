@@ -1174,10 +1174,12 @@ async function checkAuthSession(){
 
   if(saved){
     // Returning user — load their saved profile
+    // Always use Google photo as fallback if DB has no photo
+    const bestPhoto=saved.photo_url||gPhoto||'';
     me={
       name: saved.name||gName||gEmail.split('@')[0]||'User',
       avatar: saved.avatar||'😎',
-      photoUrl: saved.photo_url||gPhoto,
+      photoUrl: bestPhoto,
       bio: saved.bio||'',
       mood: saved.mood||'Just chilling 🌊',
       id: user.id,
@@ -1187,8 +1189,12 @@ async function checkAuthSession(){
       lng: null
     };
     myCredits=saved.credits||0;
-    myPhotoDataUrl=me.photoUrl||'';
+    myPhotoDataUrl=bestPhoto;
     saveCredits();
+    // If DB had no photo, save Google photo now
+    if(!saved.photo_url && gPhoto){
+      await saveUserToDB(me);
+    }
   } else {
     // New user — create profile from Google data
     me={
@@ -1213,6 +1219,18 @@ async function checkAuthSession(){
   // Hide intro, go straight to radar
   const intro=document.getElementById('s-intro');
   if(intro)intro.style.display='none';
+
+  // Force set photo on all avatar elements directly
+  const photoUrl=myPhotoDataUrl||me.photoUrl||'';
+  const profEl=document.getElementById('prof-av');
+  const myAvEl=document.getElementById('my-av');
+  const radarEl=document.getElementById('radar-center');
+  if(photoUrl){
+    [profEl,myAvEl,radarEl].forEach(el=>{
+      if(el)el.innerHTML=`<img src="${photoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" onerror="this.style.display='none'">`;
+    });
+  }
+
   syncProfileUI();
   goScreen('s-radar');
   document.getElementById('bottom-nav').style.cssText='display:flex!important;flex-direction:row';
@@ -1362,8 +1380,8 @@ async function saveUserToDB(userData){
   const payload={
     id: userData.id,
     name: userData.name,
-    avatar: userData.avatar,
-    photo_url: userData.photoUrl||'',
+    avatar: userData.avatar||'😎',
+    photo_url: userData.photoUrl||userData.photo_url||myPhotoDataUrl||'',
     bio: userData.bio||'',
     mood: userData.mood||'Just chilling 🌊',
     credits: myCredits||15,
