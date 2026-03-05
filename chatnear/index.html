@@ -1026,16 +1026,38 @@ async function signInWithGoogle(){
 
 async function checkAuthSession(){
   const {data:{session}}=await sb.auth.getSession();
-  if(session){
-    const user=session.user;
-    const meta=user.user_metadata||{};
-    const gName=meta.full_name||meta.name||'';
-    const gPhoto=meta.avatar_url||meta.picture||'';
-    const gEmail=user.email||'';
+  if(!session) return; // No session, stay on intro
 
-    // Set user data directly from Google — skip profile setup
+  const user=session.user;
+  const meta=user.user_metadata||{};
+  const gName=meta.full_name||meta.name||'';
+  const gPhoto=meta.avatar_url||meta.picture||'';
+  const gEmail=user.email||'';
+
+  // Try to load saved profile from DB first
+  const saved=await loadUserFromDB(user.id);
+
+  if(saved){
+    // Returning user — load their saved profile
     me={
-      name: gName || gEmail.split('@')[0] || 'User',
+      name: saved.name||gName||gEmail.split('@')[0]||'User',
+      avatar: saved.avatar||'😎',
+      photoUrl: saved.photo_url||gPhoto,
+      bio: saved.bio||'',
+      mood: saved.mood||'Just chilling 🌊',
+      id: user.id,
+      waves: 0,
+      msgs: 0,
+      lat: null,
+      lng: null
+    };
+    myCredits=saved.credits||0;
+    myPhotoDataUrl=me.photoUrl;
+    saveCredits();
+  } else {
+    // New user — create profile from Google data
+    me={
+      name: gName||gEmail.split('@')[0]||'User',
       avatar: '😎',
       photoUrl: gPhoto,
       bio: '',
@@ -1046,33 +1068,36 @@ async function checkAuthSession(){
       lat: null,
       lng: null
     };
-    myPhotoDataUrl = gPhoto;
+    myCredits=15; // Free starter credits
+    myPhotoDataUrl=gPhoto;
+    saveCredits();
+    await saveUserToDB(me); // Save new user to DB
+  }
 
-    // Hide intro
-    const intro=document.getElementById('s-intro');
-    if(intro)intro.style.display='none';
-
-    // Go straight to radar — no profile setup needed
-    syncProfileUI();
-    goScreen('s-radar');
-    document.getElementById('bottom-nav').style.cssText='display:flex!important;flex-direction:row';
-    requestGPS();
-    await broadcastPresence();
-    await doScan();
-    if(scannerID)clearInterval(scannerID);
-    scannerID=setInterval(()=>{broadcastPresence();doScan();},10000);
-    subscribeRealtime();
-    loadFriends();loadGroups();
-    showToast('👋 Welcome back, '+(gName.split(' ')[0]||'there')+'!');
+  // Hide intro, go straight to radar
+  const intro=document.getElementById('s-intro');
+  if(intro)intro.style.display='none';
+  syncProfileUI();
+  goScreen('s-radar');
+  document.getElementById('bottom-nav').style.cssText='display:flex!important;flex-direction:row';
+  requestGPS();
+  await broadcastPresence();
+  await doScan();
+  if(scannerID)clearInterval(scannerID);
+  scannerID=setInterval(()=>{broadcastPresence();doScan();},10000);
+  subscribeRealtime();
+  loadFriends();loadGroups();
+  if(saved){
+    showToast('👋 Welcome back, '+me.name.split(' ')[0]+'!');
+  } else {
+    showToast('🎉 Welcome to ChatNear, '+me.name.split(' ')[0]+'!');
+    setTimeout(()=>showToast('🎁 You got 15 free starter credits!'),2500);
   }
 }
 
 // Check session on load
 window.addEventListener('load', ()=>{
-  // Clear immediately and keep clearing to fight browser autocomplete
   resetForm();
-  setTimeout(()=>resetForm(), 100);
-  setTimeout(()=>resetForm(), 300);
   setTimeout(()=>resetForm(), 600);
   checkAuthSession();
   // Listen for auth state changes
@@ -1185,6 +1210,29 @@ async function deleteAccount(){
   showToast('🗑 Account deleted!');
   try{await sb.from('messages').delete().eq('sender_id',me.id);}catch(e){}
   await nukeSession();
+}
+
+// ── USER PROFILE DB ──
+async function saveUserToDB(userData){
+  try{
+    await sb.from('users').upsert({
+      id: userData.id,
+      name: userData.name,
+      avatar: userData.avatar,
+      photo_url: userData.photoUrl||'',
+      bio: userData.bio||'',
+      mood: userData.mood||'Just chilling 🌊',
+      credits: myCredits||15,
+      updated_at: new Date().toISOString()
+    },{onConflict:'id'});
+  }catch(e){console.log('saveUser err',e);}
+}
+
+async function loadUserFromDB(userId){
+  try{
+    const {data}=await sb.from('users').select('*').eq('id',userId).single();
+    return data;
+  }catch(e){return null;}
 }
 
 // ── SUPABASE ──
