@@ -1342,9 +1342,18 @@ async function logout(){
 
 async function deleteAccount(){
   closeModal('delete-modal');
-  showToast('🗑 Account deleted!');
-  try{await sb.from('messages').delete().eq('sender_id',me.id);}catch(e){}
+  showToast('🗑 Deleting account…');
+  const uid = me.id;
+  try{
+    // Delete from all tables
+    await sb.from('messages').delete().eq('sender_id',uid);
+    await sb.from('friends').delete().eq('user_id',uid);
+    await sb.from('friends').delete().eq('friend_id',uid);
+    await sb.from('presence').delete().eq('id',uid);
+    await sb.from('users').delete().eq('id',uid); // ← this is the key fix
+  }catch(e){console.log('delete error',e);}
   await nukeSession();
+  showToast('✅ Account fully deleted!');
 }
 
 // ── USER PROFILE DB ──
