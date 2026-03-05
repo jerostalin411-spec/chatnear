@@ -1442,20 +1442,12 @@ async function doScan(){
       return{...p,dist,ci:Math.abs((p.id.charCodeAt(2)||0))%6,real:true};
     });
   }catch(e){}
-  const demos=getDemos();
-  nearby=real.length>=3?real:[...real,...demos.filter(d=>!real.find(r=>r.id===d.id))];
+  nearby=real;
   renderList();renderRadar();
   document.getElementById('nearby-count').textContent=nearby.length+' '+(nearby.length===1?'person':'people');
 }
 
-function getDemos(){
-  return[
-    {id:'d1',name:'Alex Kim',avatar:'🦊',photo_url:'',bio:'Coffee lover ☕',mood:'Up for anything 🎲',dist:14,ci:0,demo:true},
-    {id:'d2',name:'Priya S.',avatar:'🐻',photo_url:'',bio:'',mood:'Looking to chat 💬',dist:31,ci:1,demo:true},
-    {id:'d3',name:'Marcus T.',avatar:'🤖',photo_url:'',bio:'Gamer & coder',mood:'Gaming nearby? 🎮',dist:52,ci:2,demo:true},
-    {id:'d4',name:'Zoe W.',avatar:'🧙',photo_url:'',bio:'Explorer 🗺️',mood:'Exploring 🗺️',dist:68,ci:3,demo:true},
-  ];
-}
+
 async function refreshNearby(){showToast('🔄 Refreshing…');await doScan();}
 
 // ── AVATAR HELPER ──
@@ -1489,7 +1481,15 @@ function renderRadar(){
 // ── PEOPLE LIST ──
 function renderList(){
   const el=document.getElementById('people-list');
-  if(!nearby.length){el.innerHTML='<div class="empty-state"><span class="icon">📡</span>No one nearby yet</div>';return;}
+  if(!nearby.length){
+    el.innerHTML=`<div class="empty-state">
+      <span class="icon">📡</span>
+      <strong style="color:var(--text);font-size:.95rem;display:block;margin-bottom:8px">No one nearby yet</strong>
+      <span style="font-size:.8rem;color:var(--text3);line-height:1.7">Share ChatNear with friends<br>so they show up on your radar!</span>
+      <button onclick="shareApp()" style="margin-top:14px;font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:700;padding:10px 20px;border-radius:999px;border:none;background:linear-gradient(135deg,var(--neon),var(--pink));color:#fff;cursor:pointer">📲 Share ChatNear</button>
+    </div>`;
+    return;
+  }
   el.innerHTML='';
   [...nearby].sort((a,b)=>a.dist-b.dist).forEach(p=>{
     const card=document.createElement('div');card.className='pcard pop';
@@ -1683,7 +1683,7 @@ async function openChat(p){
   if(p&&!p.demo)markRead(ck, p.id);
   if((msgCache[ck]||[]).length===0){
     await pushMessage(ck,{type:'notice',senderId:'system',senderName:'',text:'You and '+p.name+' are now connected 👋',ts:ts(),demo:p.demo});
-    if(p.demo)setTimeout(()=>demoReply(p,'',true),1000+Math.random()*800);
+
   }
 }
 
@@ -1741,7 +1741,7 @@ async function sendMsg(){
   await pushMessage(ck,{senderId:me.id,senderName:me.name,senderAv:me.avatar,receiverId:activePerson?.id||'',text:txt,ts:ts(),demo:activePerson?.demo,disappearing:disappearingMode});
   me.msgs++;document.getElementById('s-msgs').textContent=me.msgs;
   document.getElementById('send-btn').disabled=false;
-  if(activePerson?.demo){showTyping();setTimeout(()=>{hideTyping();demoReply(activePerson,txt,false);},1000+Math.random()*1400);}
+
 }
 
 // ── PHOTO ──
@@ -1838,19 +1838,18 @@ document.addEventListener('click',e=>{
 });
 
 // ── DEMO AI ──
-const OPENERS={d1:["Hey! 👋 Saw you on ChatNear. What are you up to?"],d2:["Oh hi! I was hoping to chat with someone 😊"],d3:["Yo! Marcus here. Always stoked to meet people nearby. What's good?"],d4:["Hi! I'm Zoe, exploring the area. Any cool spots nearby? 🗺️"]};
-async function demoReply(person,userMsg,isOpener){
-  const ck=chatKey(me.id,person.id);
-  if(isOpener){const opts=OPENERS[person.id]||["Hey! Nice to meet you 😊"];await pushMessage(ck,{senderId:person.id,senderName:person.name,senderAv:person.avatar,text:opts[0],ts:ts(),demo:true});return;}
-  const hist=(msgCache[ck]||[]).slice(-6).filter(m=>m.type==='msg').map(m=>(m.senderId===me.id?me.name:person.name)+': '+m.text).join('\n');
-  try{
-    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:80,system:`You are ${person.name} on ChatNear near ${me.name} (~${person.dist}m). Vibe: "${person.mood}". Reply casually in 1-2 short sentences.`,messages:[{role:'user',content:`${hist}\n${me.name}: "${userMsg}"\n${person.name}:`}]})});
-    const d=await res.json();const reply=(d.content||[]).map(b=>b.text||'').join('').trim();
-    if(reply)await pushMessage(ck,{senderId:person.id,senderName:person.name,senderAv:person.avatar,text:reply,ts:ts(),demo:true});
-    else throw 0;
-  }catch(e){
-    const fb=["Haha nice!","Oh interesting!","For real? 😄","Same honestly","Tell me more!"];
-    await pushMessage(ck,{senderId:person.id,senderName:person.name,senderAv:person.avatar,text:fb[Math.floor(Math.random()*fb.length)],ts:ts(),demo:true});
+
+// ── SHARE ──
+function shareApp(){
+  if(navigator.share){
+    navigator.share({
+      title:'ChatNear',
+      text:'Meet people nearby instantly! Join me on ChatNear 👋',
+      url:'https://chatnear.vercel.app'
+    });
+  } else {
+    navigator.clipboard.writeText('https://chatnear.vercel.app');
+    showToast('🔗 Link copied! Share it with friends');
   }
 }
 
