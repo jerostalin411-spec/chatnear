@@ -1818,16 +1818,43 @@ function showChatOptions(){showModal('chat-options-modal');}
 
 // ── REALTIME ──
 function subscribeRealtime(){
-  realtimeChannel=sb.channel('messages_rt')
+  if(realtimeChannel)try{sb.removeChannel(realtimeChannel);}catch(e){}
+  realtimeChannel=sb.channel('chatnear_'+me.id)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
-      const msg=payload.new;if(msg.sender_id===me.id)return;
-      const ck=chatKey(me.id,msg.sender_id);
-      if(msg.receiver_id!==me.id&&msg.chat_key!==ck)return;
+      const msg=payload.new;
+      if(!msg||msg.sender_id===me.id)return;
+      // Accept if receiver is me OR chat_key contains my id
+      const isForMe=msg.receiver_id===me.id||( msg.chat_key&&msg.chat_key.includes(me.id));
+      if(!isForMe)return;
+      const ck=msg.chat_key||chatKey(me.id,msg.sender_id);
       if(!msgCache[ck])msgCache[ck]=[];
-      msgCache[ck].push({id:msg.id,senderId:msg.sender_id,senderName:msg.sender_name,text:msg.text,ts:new Date(msg.created_at).getTime(),type:msg.type||'msg',photoUrl:msg.photo_url||'',audioUrl:msg.audio_url||'',reactions:{},disappearing:msg.disappearing||false,readBy:[]});
-      if(activePerson&&chatKey(me.id,activePerson.id)===ck){renderMessages(ck);markRead(ck,msg.sender_id);}
-      else{sendPushNotif('💬 '+msg.sender_name,msg.text.slice(0,60));showToast('💬 '+msg.sender_name+': '+msg.text.slice(0,35));document.getElementById('notif-dot').style.display='block';document.getElementById('nav-unread').style.display='block';}
-    }).subscribe();
+      msgCache[ck].push({
+        id:msg.id,
+        senderId:msg.sender_id,
+        senderName:msg.sender_name,
+        text:msg.text,
+        ts:new Date(msg.created_at).getTime(),
+        type:msg.type||'msg',
+        photoUrl:msg.photo_url||'',
+        audioUrl:msg.audio_url||'',
+        reactions:{},
+        disappearing:msg.disappearing||false,
+        readBy:[]
+      });
+      if(activePerson&&chatKey(me.id,activePerson.id)===ck){
+        renderMessages(ck);
+        markRead(ck,msg.sender_id);
+      } else {
+        sendPushNotif('💬 '+msg.sender_name,msg.text.slice(0,60));
+        showToast('💬 '+msg.sender_name+': '+msg.text.slice(0,35));
+        const dot=document.getElementById('notif-dot');
+        const unread=document.getElementById('nav-unread');
+        if(dot)dot.style.display='block';
+        if(unread)unread.style.display='block';
+      }
+    }).subscribe(status=>{
+      console.log('Realtime status:',status);
+    });
 }
 
 // ── MESSAGES ──
