@@ -1551,22 +1551,23 @@ function sendPushNotif(title,body){
 
 // ── PRESENCE ──
 async function broadcastPresence(){
-  if(!me.id)return;
-  // broadcast even without GPS so user appears on radar
-  try{
-    const {error}=await sb.from('presence').upsert({
-      id:me.id,
-      name:me.name,
-      avatar:me.avatar,
-      photo_url:me.photoUrl||'',
-      bio:me.bio||'',
-      mood:me.mood,
-      lat:me.lat||0,
-      lng:me.lng||0,
-      updated_at:new Date().toISOString()
-    },{onConflict:'id'});
-    if(error)console.error('broadcastPresence error:',error.message);
-  }catch(e){console.error('broadcastPresence:',e);}
+  if(!me.id||!me.name)return;
+  const payload={
+    id:me.id,
+    name:me.name,
+    avatar:me.avatar||'😎',
+    photo_url:me.photoUrl||'',
+    bio:me.bio||'',
+    mood:me.mood||'Just chilling 🌊',
+    lat:me.lat||0,
+    lng:me.lng||0,
+    updated_at:new Date().toISOString()
+  };
+  const {error}=await sb.from('presence').upsert(payload,{onConflict:'id'});
+  if(error){
+    showToast('⚠️ Presence error: '+error.message);
+    console.error('broadcastPresence error:',error);
+  }
 }
 async function removePresence(){try{await sb.from('presence').delete().eq('id',me.id);}catch(e){}}
 
