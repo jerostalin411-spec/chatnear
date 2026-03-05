@@ -1928,7 +1928,7 @@ async function saveProfile(){
   btn.textContent='Saving…';
   btn.classList.add('edit-saving');
 
-  // Update me object
+  // Update me object FIRST
   me.name=name;
   me.bio=bio;
   me.mood=mood;
@@ -1936,17 +1936,25 @@ async function saveProfile(){
   me.photoUrl=newPhoto;
   myPhotoDataUrl=newPhoto;
 
-  // Save to Supabase
+  // Update ALL UI elements directly
+  document.getElementById('my-name-lbl').textContent=name;
+  document.getElementById('prof-name').textContent=name;
+  document.getElementById('prof-mood').textContent=mood;
+  document.getElementById('prof-bio').textContent=bio||'';
+  updateAv(document.getElementById('my-av'),{...me,photo_url:newPhoto});
+  updateAv(document.getElementById('radar-center'),{...me,photo_url:newPhoto});
+  updateAv(document.getElementById('prof-av'),{...me,photo_url:newPhoto});
+
+  // Save to Supabase in background
   try{
     await saveUserToDB(me);
     await broadcastPresence();
-    syncProfileUI();
-    closeModal('edit-profile-modal');
-    showToast('✅ Profile saved!');
   }catch(e){
-    showToast('⚠️ Could not save. Try again.');
+    console.log('save error',e);
   }
 
+  closeModal('edit-profile-modal');
+  showToast('✅ Profile updated!');
   btn.textContent='Save Changes';
   btn.classList.remove('edit-saving');
 }
