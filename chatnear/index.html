@@ -14,7 +14,7 @@
 <!-- Open Graph (WhatsApp, Facebook, iMessage previews) -->
 <meta property="og:title" content="ChatNear — Meet People Nearby 👋">
 <meta property="og:description" content="Meet and chat with real people near you instantly. Join me on ChatNear!">
-<meta property="og:image" content="https://chatnear.vercel.app/preview.svg">
+<meta property="og:image" content="https://chatnear.vercel.app/preview.png">
 <meta property="og:url" content="https://chatnear.vercel.app">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ChatNear">
@@ -23,7 +23,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ChatNear — Meet People Nearby 👋">
 <meta name="twitter:description" content="Meet and chat with real people near you instantly!">
-<meta name="twitter:image" content="https://chatnear.vercel.app/preview.svg">
+<meta name="twitter:image" content="https://chatnear.vercel.app/preview.png">
 
 <!-- WhatsApp specific -->
 <meta property="og:image:width" content="1200">
@@ -1609,9 +1609,56 @@ function dismissWave(){document.getElementById('wave-popup').classList.remove('s
 function showNotifs(){if(pendingWave)document.getElementById('wave-popup').classList.toggle('show');document.getElementById('notif-dot').style.display='none';}
 
 // ── FRIENDS ──
-function loadFriends(){const s=localStorage.getItem('cn_friends_'+me.id);friends=s?JSON.parse(s):[];renderFriends();}
-function saveFriends(){localStorage.setItem('cn_friends_'+me.id,JSON.stringify(friends));}
-function addFriend(p){if(friends.find(f=>f.id===p.id))return;friends.push({id:p.id,name:p.name,avatar:p.avatar,photo_url:p.photo_url||'',mood:p.mood,ci:p.ci||0});saveFriends();renderFriends();document.getElementById('s-friends-count').textContent=friends.length;}
+async function loadFriends(){
+  if(!me.id){friends=[];renderFriends();return;}
+  try{
+    const {data,error}=await sb.from('friends').select('*').eq('user_id',me.id);
+    if(error)throw error;
+    friends=(data||[]).map(r=>({
+      id:r.friend_id,
+      name:r.friend_name,
+      avatar:r.friend_avatar||'😎',
+      photo_url:r.friend_photo||'',
+      mood:r.friend_mood||'',
+      dbId:r.id
+    }));
+  }catch(e){
+    // fallback to localStorage
+    const s=localStorage.getItem('cn_friends_'+me.id);
+    friends=s?JSON.parse(s):[];
+  }
+  renderFriends();
+  document.getElementById('s-friends-count').textContent=friends.length;
+}
+
+async function saveFriends(){
+  // kept for compatibility but DB is source of truth now
+  localStorage.setItem('cn_friends_'+me.id,JSON.stringify(friends));
+}
+
+async function addFriend(p){
+  if(friends.find(f=>f.id===p.id)){showToast('👥 Already friends!');return;}
+  // Add to local state immediately
+  const newFriend={id:p.id,name:p.name,avatar:p.avatar||'😎',photo_url:p.photo_url||'',mood:p.mood||''};
+  friends.push(newFriend);
+  renderFriends();
+  document.getElementById('s-friends-count').textContent=friends.length;
+  // Save to Supabase
+  try{
+    await sb.from('friends').insert({
+      user_id: me.id,
+      friend_id: p.id,
+      friend_name: p.name,
+      friend_avatar: p.avatar||'😎',
+      friend_photo: p.photo_url||'',
+      friend_mood: p.mood||''
+    });
+  }catch(e){
+    console.log('addFriend DB error:',e);
+    // fallback save to localStorage
+    saveFriends();
+  }
+}
 function renderFriends(){
   const el=document.getElementById('friends-list');
   if(!friends.length){el.innerHTML='<div class="empty-state"><span class="icon">👥</span>No friends yet</div>';return;}
@@ -1622,7 +1669,17 @@ function renderFriends(){
     el.appendChild(c);
   });
 }
-function removeFriend(id){friends=friends.filter(f=>f.id!==id);saveFriends();renderFriends();document.getElementById('s-friends-count').textContent=friends.length;}
+async function removeFriend(id){
+  friends=friends.filter(f=>f.id!==id);
+  renderFriends();
+  document.getElementById('s-friends-count').textContent=friends.length;
+  try{
+    await sb.from('friends').delete().eq('user_id',me.id).eq('friend_id',id);
+  }catch(e){
+    saveFriends(); // fallback
+  }
+  showToast('👥 Friend removed');
+}
 function openChatById(id){const p=nearby.find(x=>x.id===id)||friends.find(f=>f.id===id);if(p)openChat(p);}
 
 // ── GROUPS ──
