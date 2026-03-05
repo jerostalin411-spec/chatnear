@@ -1444,13 +1444,20 @@ function handlePhotoUpload(input){
 function handleProfPhotoUpload(input){
   const file=input.files[0];if(!file)return;
   const reader=new FileReader();
-  reader.onload=e=>{
-    myPhotoDataUrl=e.target.result;me.photoUrl=myPhotoDataUrl;
-    updateAv(document.getElementById('prof-av'),me);
-    updateAv(document.getElementById('my-av'),me);
-    updateAv(document.getElementById('radar-center'),me);
-    broadcastPresence();
-  };reader.readAsDataURL(file);
+  reader.onload=async e=>{
+    myPhotoDataUrl=e.target.result;
+    me.photoUrl=myPhotoDataUrl;
+    // Update every avatar in the UI
+    const updatedMe={...me,photo_url:myPhotoDataUrl,photoUrl:myPhotoDataUrl};
+    updateAv(document.getElementById('prof-av'),updatedMe);
+    updateAv(document.getElementById('my-av'),updatedMe);
+    updateAv(document.getElementById('radar-center'),updatedMe);
+    // Save to Supabase
+    await saveUserToDB(me);
+    await broadcastPresence();
+    showToast('📸 Profile photo updated!');
+  };
+  reader.readAsDataURL(file);
 }
 
 async function joinChatNear(){
@@ -2016,10 +2023,12 @@ function navTo(scr,el){goScreen(scr);document.querySelectorAll('.bnav-item').for
 
 // ── PROFILE ──
 function syncProfileUI(){
-  updateAv(document.getElementById('my-av'),me);
-  updateAv(document.getElementById('radar-center'),me);
-  updateAv(document.getElementById('prof-av'),{...me,photo_url:me.photoUrl});
-  document.getElementById('my-name-lbl').textContent=me.name;
+  const p={...me,photo_url:me.photoUrl||myPhotoDataUrl||''};
+  updateAv(document.getElementById('my-av'),p);
+  updateAv(document.getElementById('radar-center'),p);
+  updateAv(document.getElementById('prof-av'),p);
+  const nameEl=document.getElementById('my-name-lbl');
+  if(nameEl)nameEl.textContent=me.name;
   document.getElementById('prof-name').textContent=me.name;
   document.getElementById('prof-mood').textContent=me.mood;
   document.getElementById('prof-bio').textContent=me.bio||'';
@@ -2049,6 +2058,7 @@ function editProfile(){
   const selMood = document.querySelector(`.edit-mood[data-mood="${me.mood}"]`);
   if(selMood) selMood.classList.add('sel');
 
+  editPhotoDataUrl='';
   editPhotoDataUrl='';
   showModal('edit-profile-modal');
 }
@@ -2092,9 +2102,10 @@ async function saveProfile(){
   document.getElementById('prof-name').textContent=name;
   document.getElementById('prof-mood').textContent=mood;
   document.getElementById('prof-bio').textContent=bio||'';
-  updateAv(document.getElementById('my-av'),{...me,photo_url:newPhoto});
-  updateAv(document.getElementById('radar-center'),{...me,photo_url:newPhoto});
-  updateAv(document.getElementById('prof-av'),{...me,photo_url:newPhoto});
+  const updatedMe={...me,photo_url:newPhoto,photoUrl:newPhoto};
+  updateAv(document.getElementById('my-av'),updatedMe);
+  updateAv(document.getElementById('radar-center'),updatedMe);
+  updateAv(document.getElementById('prof-av'),updatedMe);
 
   // Save to Supabase in background
   try{
