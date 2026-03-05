@@ -1375,6 +1375,29 @@ async function deleteAccount(){
   showToast('✅ Account fully deleted!');
 }
 
+// ── PHOTO UPLOAD ──
+async function uploadPhotoToStorage(file, userId){
+  try{
+    const ext=file.name.split('.').pop()||'jpg';
+    const path=`${userId}.${ext}`;
+    // Delete old photo first
+    await sb.storage.from('avatars').remove([path]);
+    // Upload new photo
+    const {data,error}=await sb.storage.from('avatars').upload(path, file, {
+      cacheControl:'3600',
+      upsert:true,
+      contentType:file.type
+    });
+    if(error)throw error;
+    // Get public URL
+    const {data:{publicUrl}}=sb.storage.from('avatars').getPublicUrl(path);
+    return publicUrl;
+  }catch(e){
+    console.error('Upload error:',e);
+    return null;
+  }
+}
+
 // ── USER PROFILE DB ──
 async function saveUserToDB(userData){
   const payload={
@@ -1460,23 +1483,24 @@ function handlePhotoUpload(input){
     document.querySelectorAll('.av-opt').forEach(x=>x.classList.remove('sel'));
   };reader.readAsDataURL(file);
 }
-function handleProfPhotoUpload(input){
+async function handleProfPhotoUpload(input){
   const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=async e=>{
-    myPhotoDataUrl=e.target.result;
-    me.photoUrl=myPhotoDataUrl;
-    // Update every avatar in the UI
-    const updatedMe={...me,photo_url:myPhotoDataUrl,photoUrl:myPhotoDataUrl};
-    updateAv(document.getElementById('prof-av'),updatedMe);
-    updateAv(document.getElementById('my-av'),updatedMe);
-    updateAv(document.getElementById('radar-center'),updatedMe);
-    // Save to Supabase
-    await saveUserToDB(me);
-    await broadcastPresence();
-    showToast('📸 Profile photo updated!');
-  };
-  reader.readAsDataURL(file);
+  showToast('📸 Uploading photo…');
+  // Upload to Supabase Storage
+  const url=await uploadPhotoToStorage(file, me.id);
+  if(!url){
+    showToast('⚠️ Upload failed. Try again.');
+    return;
+  }
+  myPhotoDataUrl=url;
+  me.photoUrl=url;
+  const updatedMe={...me,photo_url:url,photoUrl:url};
+  updateAv(document.getElementById('prof-av'),updatedMe);
+  updateAv(document.getElementById('my-av'),updatedMe);
+  updateAv(document.getElementById('radar-center'),updatedMe);
+  await saveUserToDB(me);
+  await broadcastPresence();
+  showToast('✅ Profile photo updated!');
 }
 
 async function joinChatNear(){
@@ -2085,7 +2109,7 @@ function editProfile(){
   if(selMood) selMood.classList.add('sel');
 
   editPhotoDataUrl='';
-  editPhotoDataUrl='';
+  editPhotoFile=null;
   showModal('edit-profile-modal');
 }
 
@@ -2108,9 +2132,15 @@ async function saveProfile(){
   const bio=document.getElementById('edit-bio').value.trim();
   const mood=document.querySelector('.edit-mood.sel')?.dataset?.mood||me.mood;
   const av=document.querySelector('.edit-av-opt.sel')?.dataset?.av||me.avatar;
-  // If emoji selected (editPhotoDataUrl is empty and user clicked an emoji), clear photo
+  // If emoji selected clear photo, if new file upload it, otherwise keep existing
   const emojiSelected=document.querySelector('.edit-av-opt.sel')!==null && editPhotoDataUrl==='';
-  const newPhoto=editPhotoDataUrl||(emojiSelected?'':me.photoUrl)||'';
+  let newPhoto=emojiSelected?'':me.photoUrl||'';
+  if(editPhotoFile){
+    showToast('📸 Uploading photo…');
+    const uploaded=await uploadPhotoToStorage(editPhotoFile,me.id);
+    if(uploaded)newPhoto=uploaded;
+    editPhotoFile=null;
+  }
 
   // Show saving state
   const btn=document.getElementById('edit-save-btn');
