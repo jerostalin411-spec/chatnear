@@ -1286,18 +1286,21 @@ async function deleteAccount(){
 
 // ── USER PROFILE DB ──
 async function saveUserToDB(userData){
-  try{
-    await sb.from('users').upsert({
-      id: userData.id,
-      name: userData.name,
-      avatar: userData.avatar,
-      photo_url: userData.photoUrl||'',
-      bio: userData.bio||'',
-      mood: userData.mood||'Just chilling 🌊',
-      credits: myCredits||15,
-      updated_at: new Date().toISOString()
-    },{onConflict:'id'});
-  }catch(e){console.log('saveUser err',e);}
+  const payload={
+    id: userData.id,
+    name: userData.name,
+    avatar: userData.avatar,
+    photo_url: userData.photoUrl||'',
+    bio: userData.bio||'',
+    mood: userData.mood||'Just chilling 🌊',
+    credits: myCredits||15,
+    updated_at: new Date().toISOString()
+  };
+  const {error}=await sb.from('users').upsert(payload,{onConflict:'id'});
+  if(error){
+    console.error('saveUserToDB error:',error.message,error.code);
+    showToast('DB: '+error.message);
+  }
 }
 
 async function loadUserFromDB(userId){
