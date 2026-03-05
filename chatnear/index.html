@@ -1187,7 +1187,7 @@ async function checkAuthSession(){
       lng: null
     };
     myCredits=saved.credits||0;
-    myPhotoDataUrl=me.photoUrl;
+    myPhotoDataUrl=me.photoUrl||'';
     saveCredits();
   } else {
     // New user — create profile from Google data
@@ -1204,7 +1204,8 @@ async function checkAuthSession(){
       lng: null
     };
     myCredits=15; // Free starter credits
-    myPhotoDataUrl=gPhoto;
+    myPhotoDataUrl=gPhoto||'';
+    me.photoUrl=gPhoto||'';
     saveCredits();
     await saveUserToDB(me); // Save new user to DB
   }
@@ -1537,9 +1538,15 @@ function avHTML(p,size=42,r=12){
   return`<div style="width:${size}px;height:${size}px;border-radius:${r}px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:${size*.35}px;flex-shrink:0">${p.avatar||'😎'}</div>`;
 }
 function updateAv(el,p){
-  if(!el)return;const url=p.photo_url||p.photoUrl||'';
-  if(url){el.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;el.style.fontSize='';}
-  else{el.innerHTML=p.avatar||'😎';el.style.fontSize='';}
+  if(!el)return;
+  const url=p.photo_url||p.photoUrl||myPhotoDataUrl||'';
+  if(url){
+    el.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" onerror="this.parentElement.innerHTML='${p.avatar||'😎'}'">`;
+    el.style.fontSize='';
+  } else {
+    el.innerHTML=p.avatar||'😎';
+    el.style.fontSize='1.8rem';
+  }
 }
 
 // ── RADAR ──
@@ -2023,7 +2030,8 @@ function navTo(scr,el){goScreen(scr);document.querySelectorAll('.bnav-item').for
 
 // ── PROFILE ──
 function syncProfileUI(){
-  const p={...me,photo_url:me.photoUrl||myPhotoDataUrl||''};
+  const photoUrl=myPhotoDataUrl||me.photoUrl||me.photo_url||'';
+  const p={...me,photo_url:photoUrl,photoUrl:photoUrl};
   updateAv(document.getElementById('my-av'),p);
   updateAv(document.getElementById('radar-center'),p);
   updateAv(document.getElementById('prof-av'),p);
@@ -2082,7 +2090,9 @@ async function saveProfile(){
   const bio=document.getElementById('edit-bio').value.trim();
   const mood=document.querySelector('.edit-mood.sel')?.dataset?.mood||me.mood;
   const av=document.querySelector('.edit-av-opt.sel')?.dataset?.av||me.avatar;
-  const newPhoto=editPhotoDataUrl||me.photoUrl||'';
+  // If emoji selected (editPhotoDataUrl is empty and user clicked an emoji), clear photo
+  const emojiSelected=document.querySelector('.edit-av-opt.sel')!==null && editPhotoDataUrl==='';
+  const newPhoto=editPhotoDataUrl||(emojiSelected?'':me.photoUrl)||'';
 
   // Show saving state
   const btn=document.getElementById('edit-save-btn');
@@ -2095,7 +2105,7 @@ async function saveProfile(){
   me.mood=mood;
   me.avatar=av;
   me.photoUrl=newPhoto;
-  myPhotoDataUrl=newPhoto;
+  myPhotoDataUrl=newPhoto; // empty string if emoji chosen
 
   // Update ALL UI elements directly
   document.getElementById('my-name-lbl').textContent=name;
