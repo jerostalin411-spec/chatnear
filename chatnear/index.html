@@ -638,21 +638,49 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 
 /* ── DESKTOP — centered phone layout ── */
 @media (min-width: 768px){
-  body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#000}
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    background:#000;
+  }
   #app{
     max-width:430px;
     width:430px;
-    min-height:100vh;
     height:100vh;
     overflow:hidden;
-    border-radius:0;
     position:relative;
     box-shadow:0 0 80px rgba(0,245,255,.08),0 0 200px rgba(0,0,0,.8);
+    border:1px solid rgba(255,255,255,.06);
   }
-  .bnav{max-width:430px;left:50%;transform:translateX(-50%)}
-  .input-zone{max-width:430px;left:50%;transform:translateX(-50%)}
+  /* Make screens scrollable inside the fixed app container */
+  .screen{
+    height:calc(100vh - 80px);
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  #s-intro{width:430px;left:50%;transform:translateX(-50%)}
+  .bnav{
+    max-width:430px;
+    left:50%;
+    transform:translateX(-50%);
+    width:430px;
+  }
+  .input-zone{
+    max-width:430px;
+    left:50%;
+    transform:translateX(-50%);
+    width:430px;
+  }
   .modal-overlay{position:fixed}
   #freq-popup{max-width:398px}
+  #ar-screen{
+    max-width:430px;
+    left:50%;
+    transform:translateX(-50%);
+    width:430px;
+  }
 }
 
 </style>
@@ -1832,26 +1860,31 @@ async function saveFriends(){
 }
 
 async function addFriend(p){
+  if(!p||!p.id){showToast('⚠️ Invalid user');return;}
+  if(!me.id){showToast('⚠️ Not logged in');return;}
   if(friends.find(f=>f.id===p.id)){showToast('⚡ Already linked!');return;}
+  
   // Check if request already sent
   try{
-    const {data}=await sb.from('friend_requests').select('*').eq('sender_id',me.id).eq('receiver_id',p.id).eq('status','pending');
+    const {data,error}=await sb.from('friend_requests').select('*').eq('sender_id',me.id).eq('receiver_id',p.id).eq('status','pending');
+    if(error){showToast('⚠️ Check error: '+error.message);return;}
     if(data&&data.length>0){showToast('📡 Signal already sent!');return;}
-  }catch(e){}
+  }catch(e){showToast('⚠️ '+e.message);return;}
+  
   // Send signal
-  try{
-    await sb.from('friend_requests').insert({
-      sender_id:me.id,
-      sender_name:me.name,
-      sender_avatar:me.avatar||'😎',
-      sender_photo:me.photoUrl||'',
-      receiver_id:p.id,
-      status:'pending'
-    });
-    showToast('👥 Signal sent to '+p.name+'!');
-  }catch(e){
-    showToast('⚠️ Could not send request');
-    console.error(e);
+  const {error}=await sb.from('friend_requests').insert({
+    sender_id:me.id,
+    sender_name:me.name,
+    sender_avatar:me.avatar||'😎',
+    sender_photo:me.photoUrl||'',
+    receiver_id:p.id,
+    status:'pending'
+  });
+  if(error){
+    showToast('⚠️ Link error: '+error.message);
+    console.error('addFriend error:',error);
+  } else {
+    showToast('📡 Signal sent to '+p.name+'!');
   }
 }
 
@@ -1980,7 +2013,13 @@ function openGroupChat(g){
 // ── BLOCK/REPORT ──
 function blockUser(){if(!activePerson)return;blockedIds.add(activePerson.id);showToast('🚫 User blocked');closeModal('chat-options-modal');goScreen('s-radar');doScan();}
 function reportUser(){showToast('⚠️ Report submitted. Thank you.');closeModal('chat-options-modal');}
-function addFriendFromChat(){if(!activePerson)return;addFriend(activePerson);closeModal('chat-options-modal');}
+function addFriendFromChat(){
+  if(!activePerson){showToast('⚠️ No active chat');return;}
+  if(!activePerson.id){showToast('⚠️ Missing user ID');return;}
+  console.log('addFriendFromChat activePerson:',JSON.stringify(activePerson));
+  addFriend(activePerson);
+  closeModal('chat-options-modal');
+}
 function clearChat(){if(!activePerson)return;const ck=chatKey(me.id,activePerson.id);msgCache[ck]=[];renderMessages(ck);showToast('🗑 Chat cleared');closeModal('chat-options-modal');}
 function showChatOptions(){showModal('chat-options-modal');}
 
