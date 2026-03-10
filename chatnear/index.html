@@ -1733,18 +1733,26 @@ async function broadcastPresence(){
 }
 async function removePresence(){try{await sb.from('presence').delete().eq('id',me.id);}catch(e){}}
 
+const SCAN_RADIUS_METERS = 1000; // detect users within 1km
+
 async function doScan(){
   let real=[];
   try{
     const cutoff=new Date(Date.now()-30000).toISOString();
     const {data}=await sb.from('presence').select('*').neq('id',me.id).gte('updated_at',cutoff);
-    if(data)real=data.filter(p=>!blockedIds.has(p.id)).map((p,i)=>{
-      let dist=Math.floor(Math.random()*70+5);
-      if(me.lat&&me.lng&&p.lat&&p.lng&&(p.lat!==0||p.lng!==0)){
-        dist=calcDist(me.lat,me.lng,p.lat,p.lng);
-      }
-      return{...p,dist,ci:Math.abs((p.id.charCodeAt(2)||0))%6,real:true};
-    });
+    if(data){
+      real=data
+        .filter(p=>!blockedIds.has(p.id))
+        .map((p,i)=>{
+          let dist=9999;
+          if(me.lat&&me.lng&&p.lat&&p.lng&&(p.lat!==0||p.lng!==0)){
+            dist=calcDist(me.lat,me.lng,p.lat,p.lng);
+          }
+          return{...p,dist,ci:Math.abs((p.id.charCodeAt(2)||0))%6,real:true};
+        })
+        .filter(p=>p.dist<=SCAN_RADIUS_METERS) // only show users within radius
+        .sort((a,b)=>a.dist-b.dist); // closest first
+    }
   }catch(e){}
   nearby=real;
   renderList();renderRadar();
