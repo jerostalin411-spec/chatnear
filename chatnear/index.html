@@ -153,6 +153,26 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 .share-copy-btn{font-size:.72rem;font-weight:700;padding:6px 12px;border-radius:8px;background:linear-gradient(135deg,#0066ff,#00f5ff);border:none;color:#fff;cursor:pointer;font-family:var(--ff);white-space:nowrap}
 
 
+
+/* ── HYPE FRIEND REQUEST POPUP ── */
+#freq-popup{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-120%);z-index:9999;width:calc(100% - 32px);max-width:398px;transition:transform .5s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+#freq-popup.show{transform:translateX(-50%) translateY(16px);pointer-events:all}
+.freq-popup-inner{background:linear-gradient(135deg,#0a0a18,#0d0d20);border:1px solid rgba(0,245,255,.3);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;box-shadow:0 0 40px rgba(0,245,255,.15),0 20px 60px rgba(0,0,0,.6);position:relative;overflow:hidden}
+.freq-popup-inner::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,245,255,.05),rgba(0,102,255,.05));pointer-events:none}
+.freq-popup-glow{position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(0,245,255,.15),transparent 70%);pointer-events:none}
+.freq-popup-av{width:52px;height:52px;border-radius:16px;overflow:hidden;flex-shrink:0;border:2px solid rgba(0,245,255,.3);font-size:1.6rem;display:flex;align-items:center;justify-content:center;background:rgba(0,245,255,.08)}
+.freq-popup-av img{width:100%;height:100%;object-fit:cover}
+.freq-popup-info{flex:1;min-width:0}
+.freq-popup-tag{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.freq-popup-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);animation:blink 1s ease-in-out infinite}
+.freq-popup-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.03em;line-height:1;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.freq-popup-sub{font-size:.72rem;color:var(--text2)}
+.freq-popup-btns{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.freq-popup-accept{font-size:.72rem;font-weight:700;padding:8px 14px;border-radius:10px;border:none;background:linear-gradient(135deg,#00f5ff,#0066ff);color:#fff;cursor:pointer;font-family:'Space Grotesk',sans-serif;white-space:nowrap;box-shadow:0 4px 16px rgba(0,245,255,.25)}
+.freq-popup-decline{font-size:.72rem;font-weight:600;padding:7px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:transparent;color:var(--text2);cursor:pointer;font-family:'Space Grotesk',sans-serif;white-space:nowrap}
+.freq-popup-bar{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,#00f5ff,#0066ff);border-radius:0 0 0 20px;animation:freqTimer 6s linear forwards}
+@keyframes freqTimer{from{width:100%}to{width:0%}}
+
 /* ── FRIEND REQUESTS ── */
 .freq-card{background:var(--glass);border:1px solid rgba(0,102,255,.2);border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:10px;animation:fadeUp .3s ease}
 .freq-info{flex:1}
@@ -2340,5 +2360,24 @@ function closeModal(id){document.getElementById(id)?.classList.remove('show');}
 // ── TOAST ──
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 </script>
+
+<!-- HYPE FRIEND REQUEST POPUP -->
+<div id="freq-popup">
+  <div class="freq-popup-inner">
+    <div class="freq-popup-glow"></div>
+    <div class="freq-popup-av" id="freq-popup-av">😎</div>
+    <div class="freq-popup-info">
+      <div class="freq-popup-tag">🔗 Link Request</div>
+      <div class="freq-popup-name" id="freq-popup-name">Someone</div>
+      <div class="freq-popup-sub">wants to link up with you</div>
+    </div>
+    <div class="freq-popup-btns">
+      <button class="freq-popup-accept" id="freq-popup-accept">Link Up ✅</button>
+      <button class="freq-popup-decline" id="freq-popup-decline">Pass ❌</button>
+    </div>
+    <div class="freq-popup-bar" id="freq-popup-bar"></div>
+  </div>
+</div>
+
 </body>
 </html>
