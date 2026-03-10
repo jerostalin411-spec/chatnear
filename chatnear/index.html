@@ -635,130 +635,24 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:va
 
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:2px}
 
-/* ── DESKTOP RESPONSIVE LAYOUT ── */
+
+/* ── DESKTOP — centered phone layout ── */
 @media (min-width: 768px){
-  body{overflow:hidden}
-  
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#000}
   #app{
-    max-width:100%;
-    flex-direction:row;
+    max-width:430px;
+    width:430px;
+    min-height:100vh;
     height:100vh;
     overflow:hidden;
+    border-radius:0;
+    position:relative;
+    box-shadow:0 0 80px rgba(0,245,255,.08),0 0 200px rgba(0,0,0,.8);
   }
-
-  /* Left sidebar for desktop nav */
-  .bnav{
-    position:fixed;
-    left:0;top:0;bottom:0;
-    width:220px;
-    flex-direction:column!important;
-    justify-content:flex-start;
-    padding:24px 12px!important;
-    gap:4px;
-    border-top:none!important;
-    border-right:1px solid rgba(255,255,255,.07)!important;
-    transform:none!important;
-    height:100vh;
-    background:rgba(5,5,8,.98)!important;
-  }
-
-  /* Desktop logo in sidebar */
-  .bnav::before{
-    content:'📡 ChatNear';
-    font-family:'Bebas Neue',sans-serif;
-    font-size:1.4rem;
-    letter-spacing:.08em;
-    color:var(--cyan);
-    padding:8px 12px 20px;
-    display:block;
-    border-bottom:1px solid rgba(255,255,255,.06);
-    margin-bottom:12px;
-    width:100%;
-  }
-
-  .bnav-item{
-    flex-direction:row!important;
-    justify-content:flex-start!important;
-    gap:12px;
-    padding:12px 14px!important;
-    border-radius:12px;
-    width:100%;
-    transition:background .2s;
-  }
-  .bnav-item:hover{background:rgba(255,255,255,.05)}
-  .bnav-item.active-nav{background:rgba(0,245,255,.08)!important}
-  .bnav-icon{font-size:1.2rem!important;background:none!important;box-shadow:none!important;width:auto!important;height:auto!important}
-  .bnav-label{font-size:.88rem!important;font-weight:600;opacity:1!important;display:block!important}
-  .notif-dot{top:4px!important;right:auto!important;left:28px!important}
-
-  /* Main content shifts right */
-  .screen{
-    margin-left:220px;
-    padding:24px 32px 32px!important;
-    max-width:calc(100vw - 220px);
-    height:100vh;
-    overflow-y:auto;
-  }
-
-  /* Wider content on big screens */
-  @media(min-width:1200px){
-    .screen{
-      max-width:800px;
-      margin-left:220px;
-      margin-right:auto;
-      padding:32px 40px!important;
-    }
-  }
-
-  /* Radar bigger on desktop */
-  #s-radar{padding-top:0}
-  .radar-wrap{width:320px!important;height:320px!important}
-  
-  /* Top bar on desktop */
-  .topbar{padding:0 0 20px!important}
-
-  /* Input zone */
-  .input-zone{
-    left:220px!important;
-    transform:none!important;
-    width:calc(100% - 220px)!important;
-    max-width:800px!important;
-  }
-
-  /* Modals centered on desktop */
-  .modal-overlay{align-items:center!important}
-  .modal,.credits-modal,.edit-modal{
-    border-radius:20px!important;
-    max-width:480px!important;
-    margin:0 auto;
-  }
-
-  /* AR screen */
-  #ar-screen{left:220px}
-  #freq-popup{left:calc(220px + 50%)!important}
-
-  /* Profile page wider */
-  .prof-card{max-width:500px;margin:0 auto}
-
-  /* Friends list grid on wide screens */
-  @media(min-width:1100px){
-    .frnd-list{
-      display:grid!important;
-      grid-template-columns:1fr 1fr!important;
-      gap:12px!important;
-    }
-  }
-
-  /* Hide mobile-only elements */
-  .intro-dots{display:none}
-}
-
-@media(min-width:1024px){
-  .bnav{width:240px}
-  .screen{margin-left:240px;max-width:calc(100vw - 240px)}
-  .input-zone{left:240px!important;width:calc(100% - 240px)!important}
-  #ar-screen{left:240px}
-  #freq-popup{left:calc(240px + 50%)!important}
+  .bnav{max-width:430px;left:50%;transform:translateX(-50%)}
+  .input-zone{max-width:430px;left:50%;transform:translateX(-50%)}
+  .modal-overlay{position:fixed}
+  #freq-popup{max-width:398px}
 }
 
 </style>
