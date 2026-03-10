@@ -1871,7 +1871,23 @@ async function pushMessage(ck,msgObj){
   const activeKey=activePerson?chatKey(me.id,activePerson.id):activeGroup?'grp_'+activeGroup.id:'';
   if(activeKey===ck)renderMessages(ck);
   if(!msgObj.demo){
-    try{await sb.from('messages').insert({chat_key:ck,sender_id:msgObj.senderId,sender_name:msgObj.senderName,receiver_id:msgObj.receiverId||'',text:msgObj.text,type:msgObj.type||'msg',photo_url:msgObj.photoUrl||'',audio_url:msgObj.audioUrl||'',reactions:{},disappearing:msgObj.disappearing||false,read_by:[]});}catch(e){}
+    const {error}=await sb.from('messages').insert({
+      chat_key:ck,
+      sender_id:msgObj.senderId,
+      sender_name:msgObj.senderName,
+      receiver_id:msgObj.receiverId||'',
+      text:msgObj.text,
+      type:msgObj.type||'msg',
+      photo_url:msgObj.photoUrl||'',
+      audio_url:msgObj.audioUrl||'',
+      reactions:{},
+      disappearing:msgObj.disappearing||false,
+      read_by:[]
+    });
+    if(error){
+      showToast('⚠️ Message error: '+error.message);
+      console.error('pushMessage error:',error);
+    }
   }
 }
 async function addReaction(ck,msgId,emoji){
