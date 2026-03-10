@@ -1175,7 +1175,9 @@ async function checkAuthSession(){
   if(saved){
     // Returning user — load their saved profile
     // Always use Google photo as fallback if DB has no photo
-    const bestPhoto=saved.photo_url||gPhoto||'';
+    // If user explicitly cleared photo (chose emoji), don't override with Google photo
+    const userChoseEmoji = saved.photo_url==='' && saved.avatar && saved.avatar!=='😎';
+    const bestPhoto = userChoseEmoji ? '' : (saved.photo_url||gPhoto||'');
     me={
       name: saved.name||gName||gEmail.split('@')[0]||'User',
       avatar: saved.avatar||'😎',
@@ -1406,7 +1408,7 @@ async function saveUserToDB(userData){
     id: userData.id,
     name: userData.name,
     avatar: userData.avatar||'😎',
-    photo_url: userData.photoUrl||userData.photo_url||myPhotoDataUrl||'',
+    photo_url: (userData.photoUrl===''||myPhotoDataUrl==='') ? '' : (userData.photoUrl||userData.photo_url||myPhotoDataUrl||''),
     bio: userData.bio||'',
     mood: userData.mood||'Just chilling 🌊',
     credits: myCredits||15,
